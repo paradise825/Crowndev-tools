@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pricing | Crown Dev</title>
+<meta name="description" content="Crown Dev plans: Free, Basic, Standard and Premium. Pay in Naira or Dollar. Launch prices on now.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Pricing | Crown Dev">
+<meta property="og:description" content="Crown Dev plans: Free, Basic, Standard and Premium. Pay in Naira or Dollar. Launch prices on now.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5fa;--panel:#fff;--ink:#14213d;--mute:#5b6783;--line:#d5dcea;--sun:#ffc933;--on-sun:#14213d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--panel:#161e34;--ink:#eef1f8;--mute:#9aa6c4;--line:#2a3554}}
+:root[data-theme="dark"]{--bg:#0e1424;--panel:#161e34;--ink:#eef1f8;--mute:#9aa6c4;--line:#2a3554}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 24px;padding:18px 0}
+.logo{font:800 22px "Bricolage Grotesque",sans-serif;text-decoration:none}
+.logo span{background:var(--sun);color:var(--on-sun);padding:0 6px;border-radius:6px;margin-right:2px}
+nav{display:flex;flex-wrap:wrap;gap:2px 18px}
+nav a{text-decoration:none;color:var(--mute);font-weight:600;padding:4px 0}
+nav a:hover{color:var(--ink)}
+nav a[aria-current="page"]{color:var(--ink);box-shadow:inset 0 -3px 0 var(--sun)}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+input[type=color]{padding:2px;height:42px;cursor:pointer}
+input[type=range],input[type=checkbox]{padding:0}
+textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:10px;align-items:flex-end}
+.row>*{flex:1;min-width:0}
+.btn{display:inline-block;margin-top:14px;margin-right:8px;padding:10px 16px;border:2px solid var(--ink);border-radius:10px;background:var(--sun);color:var(--on-sun);font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none}
+.btn.alt{background:var(--panel);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.note{color:var(--mute);font-size:14px;margin:8px 0 0}
+.out{margin-top:12px;padding:10px 12px;border:1.5px dashed var(--line);border-radius:10px;min-height:44px;overflow-wrap:anywhere;font-weight:600}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:17px}
+.hero{padding:30px 0 22px;max-width:680px}
+.hero h1{font-size:clamp(36px,7vw,60px);font-weight:800;letter-spacing:-.02em}
+.hero p{color:var(--mute);font-size:18px;margin:14px 0 0}
+.panel{background:var(--panel);border:2px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--sun);padding:22px}
+footer{border-top:1px solid var(--line);padding:22px 0 30px;color:var(--mute);font-size:14px;margin-top:40px}
+.alert{border:2px solid var(--ink);border-radius:12px;background:var(--sun);color:var(--on-sun);padding:12px 16px;font-weight:600;margin:0 0 20px}
+
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;margin:6px 0 24px}
+.seg button{padding:10px 18px;border:0;background:var(--panel);color:var(--ink);font-family:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.seg button+button{border-left:2px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--sun);color:var(--on-sun)}
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:stretch;margin-bottom:46px}
+@media(max-width:980px){.plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.plans{grid-template-columns:1fr}}
+.plan{display:flex;flex-direction:column;background:var(--panel);border:2px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 var(--sun);padding:20px}
+.plan.best{box-shadow:5px 5px 0 var(--ink)}
+.plan h2{font-size:24px;font-weight:800}
+.tag{display:block;width:max-content;margin:6px 0 0;padding:2px 9px;border-radius:99px;border:1.5px solid var(--ink);background:var(--sun);color:var(--on-sun);font-size:12px;font-weight:600;vertical-align:middle}
+.price{margin:12px 0 2px;font:800 34px "Bricolage Grotesque",sans-serif}
+.was{color:var(--mute);font-size:15px;min-height:24px}
+.was s{margin-right:6px}
+.plan ul{list-style:none;margin:14px 0 16px;padding:0;color:var(--mute);font-size:15px;flex:1}
+.plan li{padding:4px 0 4px 22px;position:relative}
+.plan li::before{content:"\2713";position:absolute;left:0;font-weight:800;color:var(--ink)}
+.plan .btn{margin:0;text-align:center;width:100%}
+.steps{max-width:760px}
+.steps h2{font-size:clamp(26px,4vw,34px);margin:0 0 10px}
+.box{background:var(--panel);border:2px solid var(--ink);border-radius:14px;padding:20px;margin:0 0 22px}
+.box h3{font-size:21px;margin-bottom:6px}
+.sum{font-weight:600;font-size:18px}
+.bank{border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;margin-top:10px;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="logo" href="index.html"><span>Crown</span>Dev</a>
+  <nav aria-label="Main"><a href="index.html">Home</a><a href="tools.html">Tools</a><a href="pricing.html" aria-current="page">Pricing</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+</header>
+<main>
+
+<div class="hero">
+  <h1>Pick a plan.</h1>
+  <p>Free tools stay free. Pay once to unlock more. Launch prices are on now, so you save on every plan.</p>
+</div>
+
+<div id="okBanner" class="alert" hidden></div>
+
+<div class="seg" role="group" aria-label="Choose your currency">
+  <button type="button" data-cur="NGN" aria-pressed="true">Pay in &#8358; Naira</button>
+  <button type="button" data-cur="USD" aria-pressed="false">Pay in $ Dollar</button>
+</div>
+
+<div class="plans">
+  <section class="plan" aria-labelledby="pl-free">
+    <h2 id="pl-free">Free<span class="tag" aria-hidden="true" style="visibility:hidden">Launch price</span></h2>
+    <div class="price" data-price="free">0</div>
+    <div class="was">&nbsp;</div>
+    <ul>
+      <li>Image resizer</li><li>CV builder</li><li>Word counter</li><li>Password generator</li><li>Percentage calculator</li><li>Colour converter</li>
+    </ul>
+    <a class="btn alt" href="tools.html">Open free tools</a>
+  </section>
+
+  <section class="plan" aria-labelledby="pl-basic">
+    <h2 id="pl-basic">Basic<span class="tag">Launch price</span></h2>
+    <div class="price" data-price="basic"></div>
+    <div class="was" data-was="basic"></div>
+    <ul><li>Everything in Free</li><li>Image compressor</li><li>Unit converter</li></ul>
+    <button class="btn" type="button" data-choose="basic">Choose Basic</button>
+  </section>
+
+  <section class="plan best" aria-labelledby="pl-standard">
+    <h2 id="pl-standard">Standard<span class="tag">Launch price</span></h2>
+    <div class="price" data-price="standard"></div>
+    <div class="was" data-was="standard"></div>
+    <ul><li>Everything in Basic</li><li>QR code generator</li></ul>
+    <button class="btn" type="button" data-choose="standard">Choose Standard</button>
+  </section>
+
+  <section class="plan" aria-labelledby="pl-premium">
+    <h2 id="pl-premium">Premium<span class="tag">Launch price</span></h2>
+    <div class="price" data-price="premium"></div>
+    <div class="was" data-was="premium"></div>
+    <ul><li>Everything in Standard</li><li>Background remover</li><li>Every new tool we add</li></ul>
+    <button class="btn" type="button" data-choose="premium">Choose Premium</button>
+  </section>
+</div>
+
+<div class="steps" id="checkout">
+  <h2>Checkout</h2>
+
+  <div class="box">
+    <h3>1. Your plan</h3>
+    <p class="sum" id="sum" aria-live="polite">Choose a plan above to continue.</p>
+    <label for="ckEmail">Your email (this is the email your access is linked to)</label>
+    <input type="email" id="ckEmail" autocomplete="email" placeholder="you@example.com">
+  </div>
+
+  <div class="box">
+    <h3>2. Pay</h3>
+    <p class="note" style="margin-top:0">Option A: pay online with your card or bank. Access turns on by itself.</p>
+    <button class="btn" type="button" id="payNow" disabled>Pay online</button>
+    <p class="note" id="payMsg" aria-live="polite"></p>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <p class="note" style="margin-top:0">Option B: pay by bank transfer, then send your receipt in step 3.</p>
+    <div class="bank" id="bank"></div>
+  </div>
+
+  <div class="box">
+    <h3>3. Send your payment receipt</h3>
+    <p class="note" style="margin-top:0">Paid by transfer? Upload a screenshot or PDF of your receipt. It goes straight to our email, and you can message us on WhatsApp too.</p>
+    <form id="rcpt" method="POST" enctype="multipart/form-data" action="">
+      <input type="hidden" name="_subject" value="New payment receipt - Crown Dev">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" id="nextUrl" value="">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <label for="rName">Full name</label><input id="rName" name="name" required autocomplete="name">
+      <label for="rEmail">Email</label><input id="rEmail" name="email" type="email" required autocomplete="email">
+      <div class="row">
+        <div><label for="rPlan">Plan</label><select id="rPlan" name="plan" required><option value="">Choose</option><option value="basic">Basic</option><option value="standard">Standard</option><option value="premium">Premium</option></select></div>
+        <div><label for="rCur">Currency</label><select id="rCur" name="currency"><option value="NGN">Naira</option><option value="USD">Dollar</option></select></div>
+        <div><label for="rAmt">Amount paid</label><input id="rAmt" name="amount" type="number" step="0.01" min="0" required></div>
+      </div>
+      <label for="rRef">Transaction reference or sender name (optional)</label><input id="rRef" name="reference">
+      <label for="rFile">Receipt (image or PDF, up to 5 MB)</label><input id="rFile" name="attachment" type="file" accept="image/*,application/pdf" required>
+      <p class="note" id="rMsg" aria-live="polite"></p>
+      <button class="btn" type="submit">Send receipt</button>
+      <a class="btn alt" id="waBtn" href="#" target="_blank" rel="noopener">Message us on WhatsApp</a>
+    </form>
+  </div>
+</div>
+
+</main>
+<footer>&copy; <span id="yr"></span> Crown Dev. All rights reserved.</footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+$('yr').textContent=new Date().getFullYear();
+
+/* ===== Settings: edit these ===== */
+const CONFIG={
+  FORM_EMAIL:'idowuparadise825@gmail.com',   // receipts and messages are emailed here
+  WHATSAPP:'2349024178445',                  // WhatsApp number with country code, no + and no leading 0
+  PAYSTACK_PUBLIC_KEY:'',                    // paste your pk_live_... (or pk_test_... to try it) key to switch on online payment
+  BANK:{
+    NGN:{bank:'',name:'',number:''},         // your Naira account for transfers
+    USD:{details:''}                         // how to pay in dollars (account details, or a payment link)
+  }
+};
+/* Prices. "old" is the normal price, "now" is the launch price you charge. */
+const PLANS={
+  basic:   {name:'Basic',   NGN:{old:1500,now:1000}, USD:{old:2,now:1.5}},
+  standard:{name:'Standard',NGN:{old:3000,now:2000}, USD:{old:4,now:3}},
+  premium: {name:'Premium', NGN:{old:5000,now:3500}, USD:{old:7,now:5}}
+};
+/* ================================ */
+const SYM={NGN:'₦',USD:'$'};
+let cur='NGN',plan='';
+const money=(c,n)=>SYM[c]+(Number.isInteger(n)?n.toLocaleString('en-US'):n.toFixed(2));
+
+function renderPrices(){
+  document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cur===cur));
+  document.querySelector('[data-price="free"]').textContent=SYM[cur]+'0';
+  Object.keys(PLANS).forEach(k=>{
+    const p=PLANS[k][cur];
+    document.querySelector('[data-price="'+k+'"]').textContent=money(cur,p.now);
+    document.querySelector('[data-was="'+k+'"]').innerHTML='<s>'+money(cur,p.old)+'</s> save '+money(cur,p.old-p.now);
+  });
+  $('rCur').value=cur;
+  summary();
+}
+function summary(){
+  const pay=$('payNow');
+  if(!plan){$('sum').textContent='Choose a plan above to continue.';pay.disabled=true;renderBank();return}
+  const p=PLANS[plan][cur];
+  $('sum').textContent=PLANS[plan].name+' plan: '+money(cur,p.now)+' (normal price '+money(cur,p.old)+')';
+  $('rPlan').value=plan;$('rCur').value=cur;$('rAmt').value=p.now;
+  pay.disabled=false;renderBank();waLink();
+}
+function renderBank(){
+  const b=CONFIG.BANK[cur],box=$('bank');
+  const has=cur==='NGN'?(b.bank&&b.number):b.details;
+  if(has){
+    box.textContent='';
+    const lines=cur==='NGN'?['Bank: '+b.bank,'Account name: '+b.name,'Account number: '+b.number]:[b.details];
+    lines.forEach(t=>{const d=document.createElement('div');d.textContent=t;box.append(d)});
+  }else box.textContent='Account details are shared on request. Tap "Message us on WhatsApp" in step 3 and we will send them.';
+}
+function waLink(){
+  const p=plan?PLANS[plan].name+' plan ('+cur+' '+($('rAmt').value||'')+')':'a plan';
+  const msg='Hello Crown Dev, I would like to pay for the '+p+'. My email: '+($('rEmail').value||$('ckEmail').value||'')+'. I will send my receipt.';
+  $('waBtn').href='https://wa.me/'+CONFIG.WHATSAPP+'?text='+encodeURIComponent(msg);
+}
+document.querySelectorAll('[data-cur]').forEach(b=>b.onclick=()=>{cur=b.dataset.cur;renderPrices()});
+document.querySelectorAll('[data-choose]').forEach(b=>b.onclick=()=>{plan=b.dataset.choose;summary();$('checkout').scrollIntoView({behavior:'smooth'})});
+$('rPlan').onchange=()=>{if($('rPlan').value){plan=$('rPlan').value;summary()}};
+$('rCur').onchange=()=>{cur=$('rCur').value;renderPrices()};
+$('ckEmail').oninput=()=>{$('rEmail').value=$('ckEmail').value;waLink()};
+['rEmail','rAmt'].forEach(i=>$(i).oninput=waLink);
+
+/* Online payment (Paystack) */
+function loadScript(src){return new Promise((ok,bad)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=()=>bad(new Error('load'));document.head.append(s)})}
+$('payNow').onclick=async()=>{
+  const email=$('ckEmail').value.trim();
+  if(!plan){$('payMsg').textContent='Choose a plan first.';return}
+  if(!/^\S+@\S+\.\S+$/.test(email)){$('payMsg').textContent='Enter a valid email above so we can link your access to it.';$('ckEmail').focus();return}
+  if(!CONFIG.PAYSTACK_PUBLIC_KEY){$('payMsg').textContent='Online payment is not switched on yet. Please pay by bank transfer (option B) and send your receipt.';return}
+  try{
+    if(!window.PaystackPop)await loadScript('https://js.paystack.co/v1/inline.js');
+    const p=PLANS[plan][cur];
+    PaystackPop.setup({
+      key:CONFIG.PAYSTACK_PUBLIC_KEY,email:email,amount:Math.round(p.now*100),currency:cur,
+      ref:'CD'+Date.now(),metadata:{plan:plan},
+      callback:function(r){showOk('Payment received (reference '+r.reference+'). Open the Tools page and sign in with '+email+' to use your plan.')},
+      onClose:function(){$('payMsg').textContent='Payment window closed. You have not been charged.'}
+    }).openIframe();
+  }catch(e){$('payMsg').textContent='We could not open the payment window. Check your connection and try again.'}
+};
+function showOk(t){const b=$('okBanner');b.textContent=t;b.hidden=false;b.scrollIntoView({behavior:'smooth'})}
+
+/* Receipt form: goes to our email (FormSubmit) */
+$('rcpt').action='https://formsubmit.co/'+CONFIG.FORM_EMAIL;
+$('nextUrl').value=location.origin+location.pathname+'?receipt=sent';
+$('rcpt').onsubmit=e=>{
+  const f=$('rFile').files[0];
+  if(!f){e.preventDefault();$('rMsg').textContent='Choose your receipt file first.';return}
+  if(f.size>5*1024*1024){e.preventDefault();$('rMsg').textContent='That file is over 5 MB. Send a smaller screenshot or compress it first.';return}
+  try{sessionStorage.setItem('cdWa',$('waBtn').href)}catch(_){}
+  $('rMsg').textContent='Sending...';
+};
+renderPrices();
+if(/[?&]receipt=sent/.test(location.search)){
+  let wa='';try{wa=sessionStorage.getItem('cdWa')||''}catch(_){}
+  showOk('Receipt sent. We will check it and switch on your access.');
+  if(wa){const a=document.createElement('a');a.href=wa;a.target='_blank';a.rel='noopener';a.className='btn alt';a.textContent='Also tell us on WhatsApp';a.style.cssText='margin:10px 0 0;display:block;width:max-content';$('okBanner').append(a)}
+}
+
+</script>
+</body>
+</html>

@@ -1,69 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>About Crown Dev</title>
-  <meta name="description" content="Learn more about Crown Dev and how the tools work.">
-  <style>
-    :root{--bg:#f2f5fa;--panel:#fff;--ink:#14213d;--mute:#5b6783;--line:#d5dcea;--sun:#ffc933;--on-sun:#14213d}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);line-height:1.7}
-    .wrap{max-width:760px;margin:0 auto;padding:32px 20px 60px}
-    header{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line)}
-    .logo{font-weight:800;text-decoration:none;color:var(--ink);font-size:1.2rem;display:flex;align-items:center;gap:10px}
-    .logo-icon{width:40px;height:40px;border-radius:8px;background:var(--sun);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--on-sun);font-size:20px;flex-shrink:0}
-    .logo span{background:var(--sun);padding:0 6px;border-radius:6px;color:var(--on-sun);margin-right:2px}
-    nav a{margin-left:16px;text-decoration:none;color:var(--mute);font-weight:600}
-    h1{font-size:clamp(2rem,4vw,3rem);margin:28px 0 14px}
-    .lead{color:var(--mute);font-size:1.08rem}
-    .card{background:var(--panel);border:2px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 var(--sun);padding:20px;margin-top:26px}
-    .card h2{margin:0 0 10px;font-size:1.35rem}
-    .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-    .btn{display:inline-block;padding:11px 18px;border:2px solid var(--ink);border-radius:10px;background:var(--sun);color:var(--on-sun);font-weight:700;text-decoration:none}
-    .btn.alt{background:var(--panel);color:var(--ink)}
-    footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--mute);font-size:0.92rem}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About Crown Dev | Simple Online Tools</title>
+<meta name="description" content="Crown Dev builds simple, useful digital tools. Resize images and create a professional CV in your browser. Private, free, no sign-up.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://paradise825.github.io/CrownDev-tools/about.html">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5fa;--panel:#fff;--ink:#14213d;--mute:#5b6783;--line:#d5dcea;--sun:#ffc933;--on-sun:#14213d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--panel:#161e34;--ink:#eef1f8;--mute:#9aa6c4;--line:#2a3554}}
+:root[data-theme="dark"]{--bg:#0e1424;--panel:#161e34;--ink:#eef1f8;--mute:#9aa6c4;--line:#2a3554}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 24px;padding:18px 0}
+.logo{font:800 22px "Bricolage Grotesque",sans-serif;text-decoration:none}
+.logo span{background:var(--sun);color:var(--on-sun);padding:0 6px;border-radius:6px;margin-right:2px}
+nav{display:flex;flex-wrap:wrap;gap:2px 18px}
+nav a{text-decoration:none;color:var(--mute);font-weight:600;padding:4px 0}
+nav a:hover{color:var(--ink)}
+nav a[aria-current="page"]{color:var(--ink);box-shadow:inset 0 -3px 0 var(--sun)}
+h1{font-size:clamp(36px,7vw,56px);font-weight:800;letter-spacing:-.02em;margin:28px 0 12px}
+.lead{font-size:19px;color:var(--mute);margin:0 0 8px}
+.live{display:inline-block;margin:10px 0 0;padding:10px 16px;border:2px solid var(--ink);border-radius:10px;background:var(--sun);color:var(--on-sun);font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+h2{font-size:clamp(26px,4vw,34px);font-weight:800;margin:46px 0 12px}
+h3{font-size:21px;font-weight:600;margin:0 0 4px}
+.tool{background:var(--panel);border:2px solid var(--ink);border-radius:14px;box-shadow:5px 5px 0 var(--sun);padding:18px 20px;margin:16px 0 22px}
+.tool p{margin:0;color:var(--mute)}
+p{margin:0 0 14px}
+code{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.92em}
+ol{padding-left:22px}
+.road{list-style:none;padding:0}
+.road li{padding:6px 0;border-bottom:1px solid var(--line)}
+.road li::before{content:"\2713";display:inline-block;width:26px;font-weight:800}
+.road li.todo::before{content:"\25CB";color:var(--mute)}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.btn{display:inline-block;padding:11px 18px;border:2px solid var(--ink);border-radius:10px;background:var(--sun);color:var(--on-sun);font-weight:600;text-decoration:none}
+.btn.alt{background:var(--panel);color:var(--ink)}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:22px 0 34px;color:var(--mute);font-size:14px}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <a class="logo" href="index.html">
-        <div class="logo-icon">👑</div>
-        <span>Crown</span>Dev
-      </a>
-      <nav><a href="index.html">Tools</a><a href="about.html">About</a></nav>
-    </header>
+<div class="wrap">
+<header>
+  <a class="logo" href="index.html"><span>Crown</span>Dev</a>
+  <nav aria-label="Main"><a href="index.html">Home</a><a href="tools.html">Tools</a><a href="pricing.html">Pricing</a><a href="about.html" aria-current="page">About</a><a href="contact.html">Contact</a></nav>
+</header>
 
-    <main>
-      <h1>About Crown Dev</h1>
-      <p class="lead">Crown Dev builds simple digital tools that help people get everyday tasks done quickly, without sign-ups, without ads, and without giving away their files.</p>
+<main>
+  <h1>Crown Dev</h1>
+  <p class="lead">Welcome to Crown Dev. We build simple digital tools that help people get everyday tasks done quickly, without sign-ups, without ads in the way, and without handing over their files.</p>
+  <a class="live" href="https://paradise825.github.io/CrownDev-tools/">Open the live site</a>
 
-      <div class="card">
-        <h2>What we do</h2>
-        <p>We create small, practical tools for everyday work. Right now, our site includes an image resizer and a CV builder. Both run directly in your browser, so your files stay on your own device.</p>
-      </div>
-
-      <div class="card">
-        <h2>Why we built it</h2>
-        <p>We believe useful tools should be simple, fast, and private. Most people only need a small helper for one task, and they should not need an account or a complicated setup to use it.</p>
-      </div>
-
-      <div class="card">
-        <h2>Stay in touch</h2>
-        <p>Have an idea for a tool, or want to tell us what needs improving? We'd love to hear from you.</p>
-        <div class="btns">
-          <a class="btn" href="mailto:idowuparadise825@gmail.com">Email us</a>
-          <a class="btn alt" href="https://wa.me/2349024178445">WhatsApp</a>
-        </div>
-      </div>
-    </main>
-
-    <footer>© <span id="year"></span> Crown Dev. All rights reserved.</footer>
+  <h2>What we offer</h2>
+  <div class="tool">
+    <h3>Image Resizer</h3>
+    <p>Pick a photo, set the width and height, choose JPG, PNG or WebP, and download the result. We keep the proportions locked by default so your image doesn't get stretched, and you can adjust the quality to make the file smaller.</p>
+  </div>
+  <div class="tool">
+    <h3>CV Builder</h3>
+    <p>Type in your details and watch your CV update as you write. When you're happy with it, save it as a PDF from your browser's print window. It's a quick way to get a clean, professional CV without opening a complicated app.</p>
+  </div>
+  <div class="tool">
+    <h3>More tools</h3>
+    <p>Word counter, password generator, percentage calculator, unit converter, colour converter, image compressor, QR code generator and background remover. <a href="tools.html">See all tools</a>.</p>
   </div>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <h2>Why we built it</h2>
+  <p>We believe useful tools should be easy to understand and easy to use. Most of the time you only need to resize one picture or put together one CV, and you shouldn't need an account to do that. So we made tools that open instantly and do one job well.</p>
+
+  <h2>Your files stay private</h2>
+  <p>Everything runs inside your own browser. When you resize an image or write your CV, nothing is uploaded to a server, and we never see your files or your details.</p>
+
+  <h2>How we built it</h2>
+  <p>Crown Dev is made with plain HTML, CSS and JavaScript and hosted on GitHub Pages. The tools run inside your browser. Sign-in and payments, when switched on, use separate secure services, and your files and text are still never uploaded.</p>
+
+  <h2>Run it on your own computer</h2>
+  <ol>
+    <li>Download or clone the repository.</li>
+    <li>Open <code>index.html</code> in any modern browser. Keep all the page files in the same folder.</li>
+  </ol>
+  <p>That's it. No installation is needed.</p>
+
+  <h2>Suggest a tool</h2>
+  <p>Have an idea for a tool, or found something that isn't working? We'd love to hear from you.</p>
+  <div class="btns">
+    <a class="btn" href="mailto:idowuparadise825@gmail.com">Email us</a>
+    <a class="btn alt" href="https://wa.me/2349024178445">Chat on WhatsApp</a>
+  </div>
+
+  <h2>Roadmap</h2>
+  <ul class="road">
+    <li>Image Resizer</li>
+    <li>CV Builder</li>
+    <li>Word counter, password generator, percentage calculator, colour converter</li>
+    <li>Image compressor, unit converter, QR code generator, background remover</li>
+    <li class="todo">More tools (ideas welcome)</li>
+  </ul>
+</main>
+
+<footer>&copy; <span id="yr"></span> Crown Dev. All rights reserved.</footer>
+</div>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
 </body>
 </html>

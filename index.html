@@ -23,12 +23,13 @@ h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.1;
 a{color:inherit}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
-.logo{font:800 22px "Bricolage Grotesque",sans-serif;text-decoration:none;display:flex;align-items:center;gap:10px}
-.logo-icon{width:40px;height:40px;border-radius:8px;background:var(--sun);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--on-sun);font-size:20px;flex-shrink:0}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 24px;padding:18px 0}
+.logo{font:800 22px "Bricolage Grotesque",sans-serif;text-decoration:none}
 .logo span{background:var(--sun);color:var(--on-sun);padding:0 6px;border-radius:6px;margin-right:2px}
-nav a{margin-left:18px;text-decoration:none;color:var(--mute);font-weight:600}
+nav{display:flex;flex-wrap:wrap;gap:2px 18px}
+nav a{text-decoration:none;color:var(--mute);font-weight:600;padding:4px 0}
 nav a:hover{color:var(--ink)}
+nav a[aria-current="page"]{color:var(--ink);box-shadow:inset 0 -3px 0 var(--sun)}
 .hero{padding:36px 0 28px;max-width:640px}
 .hero h1{font-size:clamp(38px,7vw,64px);font-weight:800;letter-spacing:-.02em}
 .hero p{color:var(--mute);font-size:18px;margin:14px 0 0}
@@ -39,7 +40,7 @@ nav a:hover{color:var(--ink)}
 .tabs button[aria-selected="true"]{background:var(--sun);color:var(--on-sun)}
 .pane{padding:22px;display:none}.pane.on{display:block}
 .grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}nav a{margin-left:12px}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
 label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
 input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
 textarea{min-height:76px;resize:vertical}
@@ -58,17 +59,22 @@ section.block h2{font-size:clamp(28px,4vw,40px);margin-bottom:14px}
 .about{max-width:620px;color:var(--mute);font-size:18px}
 .contact{display:flex;gap:12px;flex-wrap:wrap}
 footer{border-top:1px solid var(--line);padding:22px 0 30px;color:var(--mute);font-size:14px}
+.more{display:flex;justify-content:center;margin:-34px 0 70px}
+.more-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;max-width:100%;padding:14px 26px;border:2px solid var(--ink);border-radius:14px;background:var(--sun);color:var(--on-sun);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:19px;font-weight:800;text-decoration:none;box-shadow:6px 6px 0 var(--ink);transition:transform .18s ease,box-shadow .18s ease}
+.more-btn .arr{display:inline-block;transition:transform .18s ease}
+.more-btn:hover,.more-btn:focus-visible{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--ink)}
+.more-btn:hover .arr,.more-btn:focus-visible .arr{transform:translateX(6px)}
+.more-btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+@media(max-width:560px){.more{margin:-40px 0 56px}.more-btn{width:100%;font-size:18px;padding:14px 18px}}
+@media(prefers-reduced-motion:reduce){.more-btn,.more-btn .arr{transition:none}}
 @media print{body *{visibility:hidden}#cvOut,#cvOut *{visibility:visible}#cvOut{position:absolute;inset:0;border:0}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <a class="logo" href="#top">
-    <div class="logo-icon">👑</div>
-    <span>Crown</span>Dev
-  </a>
-  <nav aria-label="Main"><a href="#tools">Tools</a><a href="about.html">About</a><a href="#contact">Contact</a></nav>
+  <a class="logo" href="#top"><span>Crown</span>Dev</a>
+  <nav aria-label="Main"><a href="index.html" aria-current="page">Home</a><a href="tools.html">Tools</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
 </header>
 
 <main id="top">
@@ -126,6 +132,10 @@ Built landing pages and small web tools for local clients.</textarea>
     </div>
   </div>
 
+  <div class="more">
+    <a class="more-btn" id="moreTools" href="tools.html">Explore More Tools <span class="arr" aria-hidden="true">&rarr;</span></a>
+  </div>
+
   <section class="block" id="about">
     <h2>About Crown Dev</h2>
     <p class="about">We make simple, useful tools that are easy to understand. No sign-ups, no uploads to a server, just open a tool and get the task done. More tools are on the way.</p>
@@ -147,11 +157,13 @@ Built landing pages and small web tools for local clients.</textarea>
 const $=id=>document.getElementById(id);
 $('yr').textContent=new Date().getFullYear();
 
+/* Tabs */
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.getAttribute('aria-controls')));
 });
 
+/* Image resizer */
 let img=null,ratio=1,url='';
 $('file').onchange=e=>{
   const f=e.target.files[0]; if(!f)return;
@@ -182,7 +194,8 @@ $('go').onclick=()=>{
   },$('fmt').value,+$('q').value);
 };
 
-const esc=s=>s.replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+/* CV builder */
+const esc=s=>s.replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 function cv(){
   const v=id=>esc($(id).value.trim());
   const sk=v('cSkills').split(',').map(s=>s.trim()).filter(Boolean).join(' &bull; ');
