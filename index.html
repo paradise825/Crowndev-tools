@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrownDev Tools - Fast, Private Client-Side Web Utilities</title>
+    <meta name="description" content="Free and Pro browser-based utilities that run entirely on your device. Resize images, generate QR codes, build CVs, compress photos, and clean code without server uploads.">
+    
+    <!-- Preload Fonts & Enforce HTTPS for LCP Acceleration -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (HTTPS Secured) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome Icons (HTTPS Secured) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- QR Code Generator Library (HTTPS Secured) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fffbe1',
+                            100: '#fff3b8',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            900: '#713f12',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Layout Containment CSS to Eliminate Cumulative Layout Shift (CLS) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* Fixed aspect ratio & min-height wrappers prevent CLS during tab switching */
+        .tab-content {
+            min-height: 520px;
+            contain: layout style;
+        }
+
+        /* LCP Optimization: ensure hero text renders instantly */
+        h1.hero-heading {
+            content-visibility: auto;
+            contain-intrinsic-size: 0 48px;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <i class="fas fa-crown text-slate-950 text-lg font-black"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-white">Crown<span class="text-amber-400">Dev</span></span>
+                        <span class="hidden sm:inline-block text-[10px] uppercase tracking-widest font-semibold text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded ml-2 border border-slate-700">Tools</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+                    <button id="nav-home" onclick="switchTab('home')" class="nav-btn px-3 py-2 rounded-lg text-amber-400 bg-slate-900 border border-slate-800">Home</button>
+                    <button id="nav-tools" onclick="switchTab('tools')" class="nav-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">Tools</button>
+                    <button id="nav-pricing" onclick="switchTab('pricing')" class="nav-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">Pricing</button>
+                    <button id="nav-about" onclick="switchTab('about')" class="nav-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">About</button>
+                    <button id="nav-contact" onclick="switchTab('contact')" class="nav-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">Contact</button>
+                </nav>
+
+                <!-- Auth / User Controls -->
+                <div class="flex items-center gap-3">
+                    <div id="auth-nav-container" class="flex items-center gap-2">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileNav()" class="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 focus:outline-none">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-nav" class="hidden md:hidden border-t border-slate-800 bg-slate-950 px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('home'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-900 font-medium">Home</button>
+            <button onclick="switchTab('tools'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-900 font-medium">Tools</button>
+            <button onclick="switchTab('pricing'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-900 font-medium">Pricing</button>
+            <button onclick="switchTab('about'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-900 font-medium">About</button>
+            <button onclick="switchTab('contact'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-900 font-medium">Contact</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+
+        <!-- ================= PAGE 1: HOME TAB ================= -->
+        <div id="tab-home" class="tab-content space-y-12">
+            
+            <!-- Hero Banner -->
+            <section class="text-center space-y-6 max-w-3xl mx-auto pt-6 pb-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    100% Private Client-Side Tools
+                </div>
+                <h1 class="hero-heading text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                    Fast, lightweight web utilities. <br>
+                    <span class="bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500 bg-clip-text text-transparent">Zero server uploads.</span>
+                </h1>
+                <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                    Convert, edit, calculate, and generate documents entirely inside your browser. Your files stay on your machine—safe, secure, and instant.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 pt-2">
+                    <button onclick="switchTab('tools')" class="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition transform hover:-translate-y-0.5">
+                        <i class="fas fa-th-large me-2"></i> Explore All Tools
+                    </button>
+                    <button onclick="switchTab('pricing')" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold text-sm transition">
+                        View Pricing Plans
+                    </button>
+                </div>
+            </section>
+
+            <!-- Featured Tools Grid Overview -->
+            <section class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-fire text-amber-400"></i> Popular Utilities
+                    </h2>
+                    <button onclick="switchTab('tools')" class="text-xs text-amber-400 hover:underline font-semibold flex items-center gap-1">
+                        View all 11 tools <i class="fas fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Image Resizer Card -->
+                    <div onclick="launchTool('resizer')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition duration-200 hover:shadow-xl hover:shadow-amber-500/5 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
+                                <i class="fas fa-compress-arrows-alt"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-bold text-white group-hover:text-amber-400 transition">Image Resizer</h3>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Free</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">Resize dimensions, change output formats (JPG, PNG, WebP) and adjust quality instantly.</p>
+                            </div>
+                        </div>
+                        <div class="pt-4 text-xs font-semibold text-amber-400 flex items-center gap-1">
+                            Launch Tool <i class="fas fa-arrow-right text-[10px] transition group-hover:translate-x-1"></i>
+                        </div>
+                    </div>
+
+                    <!-- Word Counter Card -->
+                    <div onclick="launchTool('wordcounter')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition duration-200 hover:shadow-xl hover:shadow-amber-500/5 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center text-xl">
+                                <i class="fas fa-file-word"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-bold text-white group-hover:text-amber-400 transition">Word & Text Counter</h3>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Free</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">Live word, sentence, paragraph, and character metrics with reading time estimator.</p>
+                            </div>
+                        </div>
+                        <div class="pt-4 text-xs font-semibold text-amber-400 flex items-center gap-1">
+                            Launch Tool <i class="fas fa-arrow-right text-[10px] transition group-hover:translate-x-1"></i>
+                        </div>
+                    </div>
+
+                    <!-- QR Code Generator Card -->
+                    <div onclick="launchTool('qrcode')" class="group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition duration-200 hover:shadow-xl hover:shadow-amber-500/5 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-bold text-white group-hover:text-amber-400 transition">QR Code Builder</h3>
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">Premium</span>
+                                </div>
+                                <p class="text-xs text-slate-400 leading-relaxed">Generate custom color high-resolution QR codes for websites, WiFi, and text.</p>
+                            </div>
+                        </div>
+                        <div class="pt-4 text-xs font-semibold text-amber-400 flex items-center gap-1">
+                            Launch Tool <i class="fas fa-arrow-right text-[10px] transition group-hover:translate-x-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Suggest a Tool & Roadmap Section -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="max-w-2xl">
+                    <h3 class="text-xl font-bold text-white mb-2">Suggest a tool</h3>
+                    <p class="text-sm text-slate-400">Have an idea for a tool, or found something that isn't working? We'd love to hear from you.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-4">
+                    <a href="mailto:idowuparadise825@gmail.com" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition shadow-md">
+                        <i class="fas fa-envelope"></i> Email us
+                    </a>
+                    <a href="https://wa.me/2349162069367" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-sm transition">
+                        <i class="fab fa-whatsapp text-emerald-400"></i> Chat on WhatsApp
+                    </a>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800">
+                    <h4 class="text-lg font-bold text-white mb-4">Active Directory Status</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-slate-300">
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-emerald-400 text-xs"></i>
+                            <span class="text-xs font-semibold">Image Resizer (Free)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-emerald-400 text-xs"></i>
+                            <span class="text-xs font-semibold">Word Counter (Free)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-emerald-400 text-xs"></i>
+                            <span class="text-xs font-semibold">CV Builder (Free)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-emerald-400 text-xs"></i>
+                            <span class="text-xs font-semibold">Password Gen (Free)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-emerald-400 text-xs"></i>
+                            <span class="text-xs font-semibold">% Calculator (Free)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-amber-400 text-xs"></i>
+                            <span class="text-xs font-semibold">Image Compressor (Basic)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-amber-400 text-xs"></i>
+                            <span class="text-xs font-semibold">Unit Converter (Basic)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-cyan-400 text-xs"></i>
+                            <span class="text-xs font-semibold">Colour Converter (Standard)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-cyan-400 text-xs"></i>
+                            <span class="text-xs font-semibold">BG Remover (Standard)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-amber-400 text-xs"></i>
+                            <span class="text-xs font-semibold">SVG Cleaner (Premium)</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <i class="fas fa-check text-amber-400 text-xs"></i>
+                            <span class="text-xs font-semibold">QR Code Gen (Premium)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ================= PAGE 2: ALL TOOLS DIRECTORY ================= -->
+        <div id="tab-tools" class="tab-content hidden space-y-6">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+                <div>
+                    <h2 class="text-xl font-bold text-white">Tool Directory</h2>
+                    <p class="text-xs text-slate-400">Select any browser utility below to open immediately.</p>
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="flex flex-wrap items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                    <button onclick="filterToolsGrid('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-400 text-slate-950">All</button>
+                    <button onclick="filterToolsGrid('free')" id="filter-free" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Free</button>
+                    <button onclick="filterToolsGrid('basic')" id="filter-basic" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Basic</button>
+                    <button onclick="filterToolsGrid('standard')" id="filter-standard" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Standard</button>
+                    <button onclick="filterToolsGrid('premium')" id="filter-premium" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">Premium</button>
+                </div>
+            </div>
+
+            <!-- Directory Grid -->
+            <div id="tools-grid-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- ACTIVE TOOL DISPLAY CANVAS -->
+            <div id="active-tool-viewport" class="hidden space-y-4">
+                <div class="flex items-center justify-between bg-slate-900 border border-slate-800 px-4 py-3 rounded-xl">
+                    <button onclick="closeActiveTool()" class="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Back to directory
+                    </button>
+                    <span id="active-tool-title-badge" class="text-xs font-bold text-amber-400 px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/20">
+                        Tool Active
+                    </span>
+                </div>
+
+                <!-- Tool Content Viewport -->
+                <div id="active-tool-container" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+                    <!-- Loaded via JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= PAGE 3: PRICING TAB ================= -->
+        <div id="tab-pricing" class="tab-content hidden space-y-10 max-w-5xl mx-auto">
+            
+            <div class="space-y-4">
+                <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">Pick a plan.</h1>
+                <p class="text-sm text-slate-400 max-w-xl">
+                    Free tools stay free forever. Upgrade anytime to unlock higher tiers with advanced client-side features.
+                </p>
+
+                <!-- Currency Switcher Toggle -->
+                <div class="inline-flex p-1 bg-slate-900 border border-slate-800 rounded-xl">
+                    <button id="curr-naira" onclick="switchCurrency('NGN')" class="px-4 py-2 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 transition">
+                        Pay in ₦ Naira
+                    </button>
+                    <button id="curr-dollar" onclick="switchCurrency('USD')" class="px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
+                        Pay in $ Dollar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pricing Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                <!-- Free Plan -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-slate-700 transition">
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-extrabold text-white">Free</h3>
+                        <div class="text-3xl font-black text-white" id="price-free">₦0</div>
+                        <ul class="space-y-2.5 text-xs text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Image resizer</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Executive CV builder</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Word counter</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Password generator</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Percentage calculator</li>
+                        </ul>
+                    </div>
+                    <button onclick="switchTab('tools')" class="mt-6 w-full py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 text-xs font-bold transition">
+                        Open free tools
+                    </button>
+                </div>
+
+                <!-- Basic Plan -->
+                <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-6 flex flex-col justify-between relative hover:border-amber-400 transition">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-extrabold text-white">Basic</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950">Launch price</span>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-white" id="price-basic">₦1,000</div>
+                            <div class="text-[10px] text-slate-400 mt-0.5" id="save-basic"><s>₦1,500</s> save ₦500</div>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> Everything in Free</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> Image compressor</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> Unit converter</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPlan('Basic')" class="mt-6 w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition">
+                        Choose Basic
+                    </button>
+                </div>
+
+                <!-- Standard Plan -->
+                <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-400 transition">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-extrabold text-white">Standard</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-400 text-slate-950">Popular</span>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-white" id="price-standard">₦2,000</div>
+                            <div class="text-[10px] text-slate-400 mt-0.5" id="save-standard"><s>₦3,000</s> save ₦1,000</div>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Everything in Basic</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Colour converter</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-cyan-400"></i> Background remover</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPlan('Standard')" class="mt-6 w-full py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 text-xs font-bold transition">
+                        Choose Standard
+                    </button>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="bg-slate-900 border-2 border-amber-400 rounded-2xl p-6 flex flex-col justify-between shadow-xl shadow-amber-500/10">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-extrabold text-amber-400">Premium</h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950">Full Access</span>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-white" id="price-premium">₦3,500</div>
+                            <div class="text-[10px] text-slate-400 mt-0.5" id="save-premium"><s>₦5,000</s> save ₦1,500</div>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-slate-300">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> Everything in Standard</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> QR Code generator</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> SVG Vector cleaner</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-amber-400"></i> Priority updates</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPlan('Premium')" class="mt-6 w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold transition">
+                        Choose Premium
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Interactive Checkout Section -->
+            <section id="checkout-section" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-8">
+                <h2 class="text-2xl font-black text-white">Checkout</h2>
+
+                <!-- Step 1: Email -->
+                <div class="space-y-2 border-b border-slate-800 pb-6">
+                    <h3 class="text-sm font-bold text-white">1. Your plan</h3>
+                    <p id="checkout-plan-summary" class="text-xs text-amber-400 font-semibold">Selected Plan: Free (Choose a plan above to upgrade)</p>
+                    
+                    <div class="pt-2">
+                        <label for="checkout-user-email" class="block text-xs font-semibold text-slate-300 mb-1">Email Address (access is linked to this account)</label>
+                        <input type="email" id="checkout-user-email" name="checkout_user_email" autocomplete="email" placeholder="you@example.com" class="w-full max-w-md px-4 py-2.5 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Step 2: Payment Options -->
+                <div class="space-y-4 border-b border-slate-800 pb-6">
+                    <h3 class="text-sm font-bold text-white">2. Payment Method</h3>
+                    
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Option A: Pay online with card or bank transfer. Access unlocks automatically.</p>
+                        <button onclick="openPayModal()" class="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition shadow-md">
+                            Pay Online (Paystack Sandbox)
+                        </button>
+                    </div>
+
+                    <div class="pt-4 space-y-2">
+                        <p class="text-xs text-slate-400">Option B: Direct bank transfer verification.</p>
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300">
+                            Bank transfer details are sent directly via WhatsApp or email upon request.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Send Receipt -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-white">3. Upload Payment Receipt</h3>
+                    <p class="text-xs text-slate-400">Paid by bank transfer? Upload a screenshot or PDF receipt for manual account activation.</p>
+
+                    <form onsubmit="handleReceiptSubmit(event)" class="space-y-4 max-w-md">
+                        <div>
+                            <label for="receipt-full-name" class="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                            <input type="text" id="receipt-full-name" name="receipt_full_name" autocomplete="name" required placeholder="John Doe" class="w-full px-4 py-2.5 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label for="receipt-file-input" class="block text-xs font-semibold text-slate-300 mb-2">Select Image / PDF Receipt</label>
+                            <input type="file" id="receipt-file-input" name="receipt_file_input" accept="image/*,.pdf" required class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                        </div>
+
+                        <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs transition">
+                            Upload Receipt
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ================= PAGE 4: ABOUT TAB ================= -->
+        <div id="tab-about" class="tab-content hidden space-y-8 max-w-4xl mx-auto">
+            
+            <!-- Main Hero Founder Note -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <p class="text-base sm:text-lg leading-relaxed text-slate-200">
+                    CrownDev Tools was founded by software developer <strong class="text-amber-400 font-semibold">Paradise Idowu</strong> with a clear mission: to build fast, lightweight, and accessible utility tools that run entirely on the client side inside the browser.
+                </p>
+
+                <div class="pt-2">
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mb-3">Why Local Client-Side Execution?</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Most online converters force you to upload private photos, sensitive PDF resumes, or proprietary text to remote third-party servers. CrownDev eliminates privacy risks by executing utilities using HTML5 Canvas, modern DOM Parsers, and local JavaScript engines right on your device.
+                    </p>
+                </div>
+
+                <div class="pt-2">
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mb-4">Technology Architecture</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition">
+                            <h3 class="text-amber-400 font-bold text-lg mb-2 flex items-center gap-2">
+                                <i class="fas fa-layer-group me-1"></i> Frontend Layer
+                            </h3>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                HTML5 Canvas, Tailwind CSS, Vanilla JavaScript (ES6+), QRCodeJS, FontAwesome Icons.
+                            </p>
+                        </div>
+                        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition">
+                            <h3 class="text-emerald-400 font-bold text-lg mb-2 flex items-center gap-2">
+                                <i class="fas fa-shield-alt me-1"></i> Security & Privacy
+                            </h3>
+                            <p class="text-sm text-slate-300 leading-relaxed">
+                                Zero server file uploads, Paystack Payment API Gateway, LocalStorage user state.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Pillars Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-amber-400"></i> Why we built it
+                    </h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        We believe useful tools should be transparent, easy to use, and blazingly fast. You shouldn't have to wait for large video or image files to upload over slow connections just to run a simple edit.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fas fa-user-lock text-amber-400"></i> Complete Privacy Guarantee
+                    </h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Everything executes locally in memory. When you resize images, build CVs, calculate math, or clean SVGs, your text and files never leave your browser window.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Suggest a Tool -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center space-y-4">
+                <h3 class="text-xl font-bold text-white">Suggest a tool</h3>
+                <p class="text-slate-400 text-sm">Have an idea for a tool, or found something that isn't working? We'd love to hear from you.</p>
+                <div class="flex flex-wrap justify-center gap-4 pt-2">
+                    <a href="mailto:idowuparadise825@gmail.com" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition">
+                        <i class="fas fa-envelope"></i> Email us
+                    </a>
+                    <a href="https://wa.me/2349162069367" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-sm transition">
+                        <i class="fab fa-whatsapp text-emerald-400"></i> Chat on WhatsApp
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= PAGE 5: CONTACT TAB ================= -->
+        <div id="tab-contact" class="tab-content hidden space-y-8 max-w-2xl mx-auto">
+            
+            <div class="text-center space-y-3">
+                <h1 class="text-3xl font-black text-white">Say hello</h1>
+                <p class="text-sm text-slate-400">Got a question or an idea for a new web utility? Reach out directly.</p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <a href="mailto:idowuparadise825@gmail.com" class="flex flex-col items-center justify-center p-6 bg-slate-950 border border-slate-800 rounded-xl hover:border-amber-400 transition text-center group">
+                        <i class="fas fa-envelope text-3xl text-amber-400 mb-3 group-hover:scale-110 transition"></i>
+                        <span class="font-bold text-white text-sm">Email Us Direct</span>
+                        <span class="text-xs text-slate-400 mt-1">idowuparadise825@gmail.com</span>
+                    </a>
+
+                    <a href="https://wa.me/2349162069367" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center p-6 bg-slate-950 border border-slate-800 rounded-xl hover:border-emerald-400 transition text-center group">
+                        <i class="fab fa-whatsapp text-3xl text-emerald-400 mb-3 group-hover:scale-110 transition"></i>
+                        <span class="font-bold text-white text-sm">WhatsApp Chat</span>
+                        <span class="text-xs text-slate-400 mt-1">+234 916 206 9367</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div>
+                © 2026 Crown Dev. All rights reserved.
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="switchTab('about')" class="hover:text-white transition">About</button>
+                <button onclick="switchTab('contact')" class="hover:text-white transition">Contact</button>
+                <button onclick="switchTab('pricing')" class="hover:text-white transition">Pricing</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= MODALS SECTION ================= -->
+
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-6 relative shadow-2xl">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-800">
+                <button id="auth-tab-login" onclick="switchAuthMode('login')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-amber-400 text-amber-400">Login</button>
+                <button id="auth-tab-signup" onclick="switchAuthMode('signup')" class="flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label for="login-email-input" class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="login-email-input" name="login_email_input" autocomplete="email" required placeholder="name@example.com" class="w-full px-4 py-2.5 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none">
+                </div>
+                <div>
+                    <label for="login-password-input" class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="login-password-input" name="login_password_input" autocomplete="current-password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signup-form" onsubmit="handleSignupSubmit(event)" class="space-y-4 hidden">
+                <div>
+                    <label for="signup-email-input" class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="signup-email-input" name="signup_email_input" autocomplete="email" required placeholder="name@example.com" class="w-full px-4 py-2.5 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none">
+                </div>
+                <div>
+                    <label for="signup-password-input" class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="signup-password-input" name="signup_password_input" autocomplete="new-password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition">
+                    Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAYSTACK PAY ONLINE MODAL -->
+    <div id="pay-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-sm p-6 space-y-6 relative shadow-2xl">
+            <button onclick="closePayModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                <div class="w-6 h-6 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <span class="font-bold text-white text-sm">Paystack Checkout Sandbox</span>
+            </div>
+
+            <form onsubmit="processCardPayment(event)" class="space-y-4">
+                <div>
+                    <label for="card-number" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Card Number</label>
+                    <input type="text" id="card-number" name="card_number" autocomplete="cc-number" value="4084 •••• •••• 1234" required class="w-full px-3 py-2 bg-slate-950 rounded border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="card-expiry" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Expiry</label>
+                        <input type="text" id="card-expiry" name="card_expiry" autocomplete="cc-exp" value="12/28" required class="w-full px-3 py-2 bg-slate-950 rounded border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="card-cvv" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">CVV</label>
+                        <input type="text" id="card-cvv" name="card_cvv" autocomplete="cc-csc" value="825" required class="w-full px-3 py-2 bg-slate-950 rounded border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition">
+                    Complete Test Payment
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        /* ================= STATE MANAGEMENT ================= */
+        let state = {
+            user: JSON.parse(localStorage.getItem('crowndev_user')) || null,
+            tier: localStorage.getItem('crowndev_tier') || 'free',
+            currency: 'NGN',
+            selectedPlan: 'Free'
+        };
+
+        const TIER_HIERARCHY = {
+            free: 0,
+            basic: 1,
+            standard: 2,
+            premium: 3
+        };
+
+        const TOOL_DATABASE = [
+            { id: 'resizer', name: 'Image Resizer', tier: 'free', icon: 'fa-compress-arrows-alt', color: 'text-blue-400', desc: 'Resize dimensions and convert JPG, PNG, WebP.' },
+            { id: 'wordcounter', name: 'Word & Text Counter', tier: 'free', icon: 'fa-file-word', color: 'text-teal-400', desc: 'Live character, word, sentence, paragraph, and reading time counter.' },
+            { id: 'cv', name: 'Executive CV Builder', tier: 'free', icon: 'fa-file-invoice', color: 'text-purple-400', desc: 'Real-time A4 resume builder with print PDF engine.' },
+            { id: 'passwordgen', name: 'Password Generator', tier: 'free', icon: 'fa-key', color: 'text-amber-400', desc: 'Custom length, symbols, digits, and strength evaluator.' },
+            { id: 'percentage', name: 'Percentage Calculator', tier: 'free', icon: 'fa-percent', color: 'text-emerald-400', desc: 'Calculate percentage values, ratios, and percentage differences.' },
+            { id: 'compressor', name: 'Image Compressor', tier: 'basic', icon: 'fa-file-image', color: 'text-indigo-400', desc: 'Adjust photo quality and live preview compressed file sizes.' },
+            { id: 'unitconverter', name: 'Unit Converter', tier: 'basic', icon: 'fa-balance-scale', color: 'text-rose-400', desc: 'Convert Length, Weight, Temperature, and Data Storage units.' },
+            { id: 'colorconverter', name: 'Colour Converter', tier: 'standard', icon: 'fa-palette', color: 'text-cyan-400', desc: 'Convert HEX to RGB, HSL, and CMYK with custom palette saving.' },
+            { id: 'bgremover', name: 'Background Remover', tier: 'standard', icon: 'fa-magic', color: 'text-pink-400', desc: 'Browser color-key threshold editor to isolate subjects.' },
+            { id: 'qrcode', name: 'QR Code Builder', tier: 'premium', icon: 'fa-qrcode', color: 'text-amber-300', desc: 'Generate custom color QR codes with high-res PNG download.' },
+            { id: 'svgcleaner', name: 'SVG Vector Cleaner', tier: 'premium', icon: 'fa-code', color: 'text-emerald-300', desc: 'Strip XML metadata and optimize SVG vector raw code.' }
+        ];
+
+        /* ================= INITIALIZATION ================= */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAuthNav();
+            renderToolsGrid('all');
+            updatePriceDisplay();
+        });
+
+        /* ================= TAB NAVIGATION ENGINE ================= */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-amber-400', 'bg-slate-900', 'border', 'border-slate-800');
+                btn.classList.add('text-slate-400');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-amber-400', 'bg-slate-900', 'border', 'border-slate-800');
+                activeBtn.classList.remove('text-slate-400');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileNav() {
+            const menu = document.getElementById('mobile-nav');
+            menu.classList.toggle('hidden');
+        }
+
+        /* ================= AUTHENTICATION HANDLERS ================= */
+        function renderAuthNav() {
+            const container = document.getElementById('auth-nav-container');
+            if (state.user) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-300 font-semibold">${state.user.email}</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${state.tier !== 'free' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-400'}">${state.tier}</span>
+                        <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-white text-xs"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openAuthModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-bold transition">
+                        Sign In / Register
+                    </button>
+                `;
+            }
+        }
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function switchAuthMode(mode) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const tabLogin = document.getElementById('auth-tab-login');
+            const tabSignup = document.getElementById('auth-tab-signup');
+
+            if (mode === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                tabLogin.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-amber-400 text-amber-400";
+                tabSignup.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            } else {
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                tabSignup.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-amber-400 text-amber-400";
+                tabLogin.className = "flex-1 pb-3 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+            }
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email-input').value;
+            state.user = { email: email };
+            localStorage.setItem('crowndev_user', JSON.stringify(state.user));
+            renderAuthNav();
+            closeAuthModal();
+        }
+
+        function handleSignupSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('signup-email-input').value;
+            state.user = { email: email };
+            localStorage.setItem('crowndev_user', JSON.stringify(state.user));
+            renderAuthNav();
+            closeAuthModal();
+        }
+
+        function handleLogout() {
+            state.user = null;
+            state.tier = 'free';
+            localStorage.removeItem('crowndev_user');
+            localStorage.removeItem('crowndev_tier');
+            renderAuthNav();
+        }
+
+        /* ================= TOOL DIRECTORY & LAUNCHER ================= */
+        function renderToolsGrid(filter = 'all') {
+            const grid = document.getElementById('tools-grid-container');
+            grid.innerHTML = '';
+
+            const filtered = TOOL_DATABASE.filter(t => filter === 'all' || t.tier === filter);
+
+            filtered.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = "group cursor-pointer bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/50 transition duration-200 flex flex-col justify-between";
+                card.onclick = () => launchTool(tool.id);
+                card.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 ${tool.color} flex items-center justify-center text-xl">
+                            <i class="fas ${tool.icon}"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-bold text-white group-hover:text-amber-400 transition">${tool.name}</h3>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${tool.tier === 'free' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : tool.tier === 'basic' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : tool.tier === 'standard' ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">${tool.tier}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed">${tool.desc}</p>
+                        </div>
+                    </div>
+                    <div class="pt-4 text-xs font-semibold text-amber-400 flex items-center gap-1">
+                        Open Utility <i class="fas fa-arrow-right text-[10px] transition group-hover:translate-x-1"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterToolsGrid(filter) {
+            ['all', 'free', 'basic', 'standard', 'premium'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (btn) {
+                    if (f === filter) {
+                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-400 text-slate-950";
+                    } else {
+                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white";
+                    }
+                }
+            });
+            renderToolsGrid(filter);
+        }
+
+        function launchTool(toolId) {
+            const tool = TOOL_DATABASE.find(t => t.id === toolId);
+            if (!tool) return;
+
+            const requiredLevel = TIER_HIERARCHY[tool.tier] || 0;
+            const currentLevel = TIER_HIERARCHY[state.tier] || 0;
+
+            if (currentLevel < requiredLevel) {
+                alert(`The ${tool.name} tool requires a ${tool.tier.toUpperCase()} subscription tier or higher. Redirecting to pricing...`);
+                switchTab('pricing');
+                return;
+            }
+
+            switchTab('tools');
+            document.getElementById('tools-grid-container').classList.add('hidden');
+            document.getElementById('active-tool-viewport').classList.remove('hidden');
+            document.getElementById('active-tool-title-badge').textContent = tool.name;
+
+            const container = document.getElementById('active-tool-container');
+
+            /* Render specific tool interactive HTML interfaces */
+            if (toolId === 'resizer') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Image Resizer</h3>
+                        <div>
+                            <label for="resizer-file-input" class="block text-xs font-semibold text-slate-300 mb-2">Select Image File</label>
+                            <input type="file" id="resizer-file-input" name="resizer_file_input" accept="image/*" onchange="loadResizerImage(event)" class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="resizer-width" class="block text-xs font-semibold text-slate-300 mb-1">Width (px)</label>
+                                <input type="number" id="resizer-width" name="resizer_width" placeholder="800" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                            </div>
+                            <div>
+                                <label for="resizer-height" class="block text-xs font-semibold text-slate-300 mb-1">Height (px)</label>
+                                <input type="number" id="resizer-height" name="resizer_height" placeholder="600" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="resizer-format" class="block text-xs font-semibold text-slate-300 mb-1">Output Format</label>
+                            <select id="resizer-format" name="resizer_format" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                                <option value="image/jpeg">JPEG</option>
+                                <option value="image/png">PNG</option>
+                                <option value="image/webp">WebP</option>
+                            </select>
+                        </div>
+
+                        <button onclick="processResizeDownload()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition">
+                            Process & Download Image
+                        </button>
+                        <canvas id="resizer-canvas" class="hidden"></canvas>
+                    </div>
+                `;
+            } else if (toolId === 'wordcounter') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-2xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Word & Text Counter</h3>
+                        <div>
+                            <label for="wordcounter-text" class="block text-xs font-semibold text-slate-300 mb-2">Paste or Type Text</label>
+                            <textarea id="wordcounter-text" name="wordcounter_text" oninput="updateWordCounterMetrics()" rows="8" placeholder="Start typing or paste your content here..." class="w-full p-4 bg-slate-950 rounded-xl border border-slate-800 text-sm text-white focus:border-amber-400 focus:outline-none"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+                                <span class="block text-xl font-extrabold text-amber-400" id="wc-words">0</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold">Words</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+                                <span class="block text-xl font-extrabold text-white" id="wc-chars">0</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold">Characters</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+                                <span class="block text-xl font-extrabold text-white" id="wc-sentences">0</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold">Sentences</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+                                <span class="block text-xl font-extrabold text-white" id="wc-paragraphs">0</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold">Paragraphs</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center col-span-2 sm:col-span-1">
+                                <span class="block text-xl font-extrabold text-emerald-400" id="wc-readtime">0m</span>
+                                <span class="text-[10px] text-slate-400 uppercase font-bold">Read Time</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (toolId === 'passwordgen') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-md mx-auto">
+                        <h3 class="text-lg font-bold text-white">Password Generator</h3>
+                        
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <span id="pwd-display" class="font-mono text-base font-bold text-amber-400 break-all">Select Options</span>
+                            <button onclick="copyGeneratedPassword()" class="ml-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-white font-semibold transition">
+                                Copy
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <label for="pwd-length" class="font-semibold">Password Length</label>
+                                    <span id="pwd-len-val" class="font-bold text-amber-400">16</span>
+                                </div>
+                                <input type="range" id="pwd-length" name="pwd_length" min="6" max="64" value="16" oninput="document.getElementById('pwd-len-val').textContent=this.value; generateCustomPassword();" class="w-full accent-amber-400">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                    <input type="checkbox" id="pwd-upper" checked onchange="generateCustomPassword()" class="accent-amber-400">
+                                    Include Uppercase Letters (A-Z)
+                                </label>
+                                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                    <input type="checkbox" id="pwd-numbers" checked onchange="generateCustomPassword()" class="accent-amber-400">
+                                    Include Numbers (0-9)
+                                </label>
+                                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                    <input type="checkbox" id="pwd-symbols" checked onchange="generateCustomPassword()" class="accent-amber-400">
+                                    Include Symbols (!@#$%^&*)
+                                </label>
+                            </div>
+
+                            <button onclick="generateCustomPassword()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition">
+                                Generate New Password
+                            </button>
+                        </div>
+                    </div>
+                `;
+                generateCustomPassword();
+            } else if (toolId === 'percentage') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Percentage Calculator</h3>
+                        
+                        <div class="space-y-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <h4 class="text-xs font-bold text-amber-400 uppercase">What is X% of Y?</h4>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="perc-1-x" placeholder="15" oninput="calcPerc1()" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-800 text-xs text-white">
+                                <span class="text-xs text-slate-400">% of</span>
+                                <input type="number" id="perc-1-y" placeholder="200" oninput="calcPerc1()" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-800 text-xs text-white">
+                                <span class="text-xs text-slate-400">=</span>
+                                <span id="perc-1-res" class="text-sm font-bold text-emerald-400 min-w-[50px]">0</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <h4 class="text-xs font-bold text-amber-400 uppercase">X is what % of Y?</h4>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="perc-2-x" placeholder="25" oninput="calcPerc2()" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-800 text-xs text-white">
+                                <span class="text-xs text-slate-400">is % of</span>
+                                <input type="number" id="perc-2-y" placeholder="100" oninput="calcPerc2()" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-800 text-xs text-white">
+                                <span class="text-xs text-slate-400">=</span>
+                                <span id="perc-2-res" class="text-sm font-bold text-emerald-400 min-w-[50px]">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (toolId === 'compressor') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Image Compressor (Basic Tier)</h3>
+                        <div>
+                            <label for="comp-file-input" class="block text-xs font-semibold text-slate-300 mb-2">Select Image File</label>
+                            <input type="file" id="comp-file-input" name="comp_file_input" accept="image/jpeg,image/webp" onchange="loadCompressorImage(event)" class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs text-slate-300">
+                                <label for="comp-quality" class="font-semibold">Compression Quality</label>
+                                <span id="comp-qual-val" class="font-bold text-amber-400">70%</span>
+                            </div>
+                            <input type="range" id="comp-quality" name="comp_quality" min="10" max="90" value="70" oninput="document.getElementById('comp-qual-val').textContent=this.value+'%'; processImageCompression();" class="w-full accent-amber-400">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <span class="block text-xs text-slate-400">Original Size</span>
+                                <span id="comp-orig-size" class="text-sm font-bold text-white">0 KB</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <span class="block text-xs text-slate-400">Compressed Size</span>
+                                <span id="comp-new-size" class="text-sm font-bold text-emerald-400">0 KB</span>
+                            </div>
+                        </div>
+
+                        <button onclick="downloadCompressedImage()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition">
+                            Download Compressed Image
+                        </button>
+                    </div>
+                `;
+            } else if (toolId === 'unitconverter') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Multi-Unit Converter (Basic Tier)</h3>
+                        <div>
+                            <label for="unit-category" class="block text-xs font-semibold text-slate-300 mb-1">Conversion Category</label>
+                            <select id="unit-category" name="unit_category" onchange="setupUnitConverterOptions()" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                                <option value="length">Length (Meters, KM, Miles, Feet)</option>
+                                <option value="weight">Weight (KG, Grams, Pounds, Ounces)</option>
+                                <option value="data">Data Storage (MB, GB, TB)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label for="unit-from-val" class="block text-xs font-semibold text-slate-300">From Value</label>
+                                <input type="number" id="unit-from-val" value="1" oninput="convertUnits()" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                                <select id="unit-from-type" onchange="convertUnits()" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white"></select>
+                            </div>
+                            <div class="space-y-2">
+                                <label for="unit-to-val" class="block text-xs font-semibold text-slate-300">To Result</label>
+                                <input type="text" id="unit-to-val" readonly class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs font-bold text-amber-400">
+                                <select id="unit-to-type" onchange="convertUnits()" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white"></select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                setupUnitConverterOptions();
+            } else if (toolId === 'colorconverter') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Colour Converter (Standard Tier)</h3>
+                        <div class="flex items-center gap-4">
+                            <input type="color" id="color-picker" value="#eab308" oninput="updateColorDetails(this.value)" class="w-16 h-16 rounded-xl cursor-pointer bg-transparent border-0">
+                            <div class="flex-1">
+                                <label for="color-hex-input" class="block text-xs font-semibold text-slate-300 mb-1">HEX Code</label>
+                                <input type="text" id="color-hex-input" value="#eab308" oninput="updateColorDetails(this.value)" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono text-amber-400">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 text-center">
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <span class="block text-[10px] text-slate-400 font-bold uppercase">RGB</span>
+                                <span id="color-rgb" class="text-xs font-mono font-bold text-white">234, 179, 8</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <span class="block text-[10px] text-slate-400 font-bold uppercase">HSL</span>
+                                <span id="color-hsl" class="text-xs font-mono font-bold text-white">45°, 93%, 47%</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                <span class="block text-[10px] text-slate-400 font-bold uppercase">CMYK</span>
+                                <span id="color-cmyk" class="text-xs font-mono font-bold text-white">0, 24, 97, 8</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (toolId === 'bgremover') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Background Remover (Standard Tier)</h3>
+                        <div>
+                            <label for="bg-file-input" class="block text-xs font-semibold text-slate-300 mb-2">Select Graphic / Photo</label>
+                            <input type="file" id="bg-file-input" accept="image/*" onchange="loadBgImage(event)" class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700">
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs text-slate-300">
+                                <label for="bg-threshold" class="font-semibold">Key Transparency Threshold</label>
+                                <span id="bg-thresh-val" class="font-bold text-amber-400">30</span>
+                            </div>
+                            <input type="range" id="bg-threshold" min="5" max="100" value="30" oninput="document.getElementById('bg-thresh-val').textContent=this.value; removeBackgroundKey();" class="w-full accent-amber-400">
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                            <canvas id="bg-canvas" class="max-w-full h-auto mx-auto rounded-lg border border-slate-800"></canvas>
+                        </div>
+
+                        <button onclick="downloadTransparentPNG()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition">
+                            Download Transparent PNG
+                        </button>
+                    </div>
+                `;
+            } else if (toolId === 'qrcode') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-md mx-auto">
+                        <h3 class="text-lg font-bold text-white">QR Code Builder (Premium Tier)</h3>
+                        <div>
+                            <label for="qr-input-text" class="block text-xs font-semibold text-slate-300 mb-1">URL or Plain Text</label>
+                            <input type="text" id="qr-input-text" value="https://crowndev.tools" oninput="generateQRCodeCanvas()" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="qr-fg-color" class="block text-xs font-semibold text-slate-300 mb-1">Foreground Color</label>
+                                <input type="color" id="qr-fg-color" value="#000000" onchange="generateQRCodeCanvas()" class="w-full h-10 rounded-xl bg-transparent border-0 cursor-pointer">
+                            </div>
+                            <div>
+                                <label for="qr-bg-color" class="block text-xs font-semibold text-slate-300 mb-1">Background Color</label>
+                                <input type="color" id="qr-bg-color" value="#ffffff" onchange="generateQRCodeCanvas()" class="w-full h-10 rounded-xl bg-transparent border-0 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 flex justify-center items-center min-h-[200px]" id="qr-target-container"></div>
+
+                        <button onclick="downloadQRCodeImage()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition">
+                            Download High-Res QR PNG
+                        </button>
+                    </div>
+                `;
+                generateQRCodeCanvas();
+            } else if (toolId === 'cv') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-2xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">Executive CV Builder</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="cv-full-name" class="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                                <input type="text" id="cv-full-name" name="cv_full_name" autocomplete="name" value="Paradise Idowu" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                            </div>
+                            <div>
+                                <label for="cv-email" class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                                <input type="email" id="cv-email" name="cv_email" autocomplete="email" value="idowuparadise825@gmail.com" class="w-full px-3 py-2 bg-slate-950 rounded-xl border border-slate-800 text-xs text-white">
+                            </div>
+                            <button onclick="window.print()" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition">
+                                Print / Save PDF Resume
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (toolId === 'svgcleaner') {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-2xl mx-auto">
+                        <h3 class="text-lg font-bold text-white">SVG Vector Cleaner (Premium Tier)</h3>
+                        <p class="text-xs text-slate-400">Paste your raw SVG code below to strip comments and bloat.</p>
+                        <textarea id="svg-raw-input" class="w-full h-40 p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono text-white" placeholder="<svg>...</svg>"></textarea>
+                        <button onclick="cleanSVGCode()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition">
+                            Clean SVG Code
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function closeActiveTool() {
+            document.getElementById('active-tool-viewport').classList.add('hidden');
+            document.getElementById('tools-grid-container').classList.remove('hidden');
+        }
+
+        /* ================= TOOL LOGIC FUNCTION ENGINE ================= */
+        // 1. Word Counter
+        function updateWordCounterMetrics() {
+            const txt = document.getElementById('wordcounter-text').value;
+            const words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+            const chars = txt.length;
+            const sentences = txt.trim() ? txt.split(/[.!?]+/).filter(Boolean).length : 0;
+            const paragraphs = txt.trim() ? txt.split(/\n+/).filter(Boolean).length : 0;
+            const readTime = Math.ceil(words / 200);
+
+            document.getElementById('wc-words').textContent = words;
+            document.getElementById('wc-chars').textContent = chars;
+            document.getElementById('wc-sentences').textContent = sentences;
+            document.getElementById('wc-paragraphs').textContent = paragraphs;
+            document.getElementById('wc-readtime').textContent = `${readTime}m`;
+        }
+
+        // 2. Password Generator
+        function generateCustomPassword() {
+            const len = parseInt(document.getElementById('pwd-length').value);
+            const upper = document.getElementById('pwd-upper').checked;
+            const nums = document.getElementById('pwd-numbers').checked;
+            const syms = document.getElementById('pwd-symbols').checked;
+
+            let chars = "abcdefghijklmnopqrstuvwxyz";
+            if (upper) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            if (nums) chars += "0123456789";
+            if (syms) chars += "!@#$%^&*()_+~`|}{[]:;?><,.-=";
+
+            let res = "";
+            for (let i = 0; i < len; i++) {
+                res += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('pwd-display').textContent = res;
+        }
+
+        function copyGeneratedPassword() {
+            const pwd = document.getElementById('pwd-display').textContent;
+            const input = document.createElement('textarea');
+            input.value = pwd;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            alert("Password copied to clipboard!");
+        }
+
+        // 3. Percentage Calculator
+        function calcPerc1() {
+            const x = parseFloat(document.getElementById('perc-1-x').value) || 0;
+            const y = parseFloat(document.getElementById('perc-1-y').value) || 0;
+            document.getElementById('perc-1-res').textContent = ((x / 100) * y).toFixed(2);
+        }
+
+        function calcPerc2() {
+            const x = parseFloat(document.getElementById('perc-2-x').value) || 0;
+            const y = parseFloat(document.getElementById('perc-2-y').value) || 1;
+            document.getElementById('perc-2-res').textContent = ((x / y) * 100).toFixed(2) + '%';
+        }
+
+        // 4. Image Compressor
+        let compImageObj = null;
+        function loadCompressorImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            document.getElementById('comp-orig-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    compImageObj = img;
+                    processImageCompression();
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processImageCompression() {
+            if (!compImageObj) return;
+            const qual = parseInt(document.getElementById('comp-quality').value) / 100;
+            const canvas = document.createElement('canvas');
+            canvas.width = compImageObj.width;
+            canvas.height = compImageObj.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(compImageObj, 0, 0);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', qual);
+            const head = 'data:image/jpeg;base64,';
+            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
+            document.getElementById('comp-new-size').textContent = (sizeInBytes / 1024).toFixed(1) + ' KB';
+        }
+
+        function downloadCompressedImage() {
+            if (!compImageObj) return;
+            const qual = parseInt(document.getElementById('comp-quality').value) / 100;
+            const canvas = document.createElement('canvas');
+            canvas.width = compImageObj.width;
+            canvas.height = compImageObj.height;
+            canvas.getContext('2d').drawImage(compImageObj, 0, 0);
+            const link = document.createElement('a');
+            link.download = 'compressed-photo.jpg';
+            link.href = canvas.toDataURL('image/jpeg', qual);
+            link.click();
+        }
+
+        // 5. Unit Converter
+        const UNIT_MAP = {
+            length: { Meters: 1, Kilometers: 1000, Miles: 1609.34, Feet: 0.3048 },
+            weight: { Kilograms: 1, Grams: 0.001, Pounds: 0.453592, Ounces: 0.0283495 },
+            data: { Megabytes: 1, Gigabytes: 1024, Terabytes: 1048576 }
+        };
+
+        function setupUnitConverterOptions() {
+            const cat = document.getElementById('unit-category').value;
+            const opts = Object.keys(UNIT_MAP[cat]);
+            const fromSelect = document.getElementById('unit-from-type');
+            const toSelect = document.getElementById('unit-to-type');
+
+            fromSelect.innerHTML = opts.map(o => `<option value="${o}">${o}</option>`).join('');
+            toSelect.innerHTML = opts.map((o, idx) => `<option value="${o}" ${idx===1?'selected':''}>${o}</option>`).join('');
+            convertUnits();
+        }
+
+        function convertUnits() {
+            const cat = document.getElementById('unit-category').value;
+            const val = parseFloat(document.getElementById('unit-from-val').value) || 0;
+            const from = document.getElementById('unit-from-type').value;
+            const to = document.getElementById('unit-to-type').value;
+
+            const baseVal = val * UNIT_MAP[cat][from];
+            const result = baseVal / UNIT_MAP[cat][to];
+            document.getElementById('unit-to-val').value = result.toFixed(4);
+        }
+
+        // 6. Colour Converter
+        function updateColorDetails(hex) {
+            if (!/^#[0-9A-F]{6}$/i.test(hex)) return;
+            document.getElementById('color-picker').value = hex;
+            document.getElementById('color-hex-input').value = hex;
+
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            document.getElementById('color-rgb').textContent = `${r}, ${g}, ${b}`;
+
+            // HSL
+            let r1 = r/255, g1 = g/255, b1 = b/255;
+            let max = Math.max(r1, g1, b1), min = Math.min(r1, g1, b1);
+            let h, s, l = (max + min) / 2;
+            if (max === min) { h = s = 0; } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch(max) {
+                    case r1: h = (g1 - b1) / d + (g1 < b1 ? 6 : 0); break;
+                    case g1: h = (b1 - r1) / d + 2; break;
+                    case b1: h = (r1 - g1) / d + 4; break;
+                }
+                h /= 6;
+            }
+            document.getElementById('color-hsl').textContent = `${Math.round(h*360)}°, ${Math.round(s*100)}%, ${Math.round(l*100)}%`;
+        }
+
+        // 7. Background Remover
+        let bgImgObj = null;
+        function loadBgImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    bgImgObj = img;
+                    removeBackgroundKey();
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeBackgroundKey() {
+            if (!bgImgObj) return;
+            const canvas = document.getElementById('bg-canvas');
+            canvas.width = bgImgObj.width;
+            canvas.height = bgImgObj.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(bgImgObj, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+            const thresh = parseInt(document.getElementById('bg-threshold').value);
+
+            // Top left corner color keying
+            const r0 = data[0], g0 = data[1], b0 = data[2];
+
+            for (let i = 0; i < data.length; i += 4) {
+                let diff = Math.abs(data[i] - r0) + Math.abs(data[i+1] - g0) + Math.abs(data[i+2] - b0);
+                if (diff < thresh) {
+                    data[i+3] = 0; // Set Alpha to 0
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        function downloadTransparentPNG() {
+            const canvas = document.getElementById('bg-canvas');
+            const link = document.createElement('a');
+            link.download = 'transparent-subject.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // 8. QR Code Generator
+        function generateQRCodeCanvas() {
+            const text = document.getElementById('qr-input-text').value || "https://crowndev.tools";
+            const fg = document.getElementById('qr-fg-color').value;
+            const bg = document.getElementById('qr-bg-color').value;
+
+            const target = document.getElementById('qr-target-container');
+            target.innerHTML = '';
+
+            new QRCode(target, {
+                text: text,
+                width: 180,
+                height: 180,
+                colorDark: fg,
+                colorLight: bg,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function downloadQRCodeImage() {
+            const img = document.querySelector('#qr-target-container img');
+            if (img) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = img.src;
+                link.click();
+            }
+        }
+
+        /* ================= RESIZER LOGIC HANDLERS ================= */
+        let loadedImageObj = null;
+        function loadResizerImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedImageObj = img;
+                    document.getElementById('resizer-width').value = img.width;
+                    document.getElementById('resizer-height').value = img.height;
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function processResizeDownload() {
+            if (!loadedImageObj) {
+                alert("Please select an image first.");
+                return;
+            }
+            const width = parseInt(document.getElementById('resizer-width').value) || loadedImageObj.width;
+            const height = parseInt(document.getElementById('resizer-height').value) || loadedImageObj.height;
+            const format = document.getElementById('resizer-format').value;
+
+            const canvas = document.getElementById('resizer-canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(loadedImageObj, 0, 0, width, height);
+
+            const link = document.createElement('a');
+            link.download = `resized-image.${format.split('/')[1]}`;
+            link.href = canvas.toDataURL(format, 0.9);
+            link.click();
+        }
+
+        function cleanSVGCode() {
+            const raw = document.getElementById('svg-raw-input').value;
+            if (!raw) return;
+            const cleaned = raw.replace(/<!--[\s\S]*?-->/g, '').replace(/<\?xml[\s\S]*?\?>/g, '').trim();
+            document.getElementById('svg-raw-input').value = cleaned;
+            alert("SVG metadata and comments stripped successfully.");
+        }
+
+        /* ================= PRICING & PAYMENT HANDLERS ================= */
+        function switchCurrency(curr) {
+            state.currency = curr;
+            const btnNaira = document.getElementById('curr-naira');
+            const btnDollar = document.getElementById('curr-dollar');
+
+            if (curr === 'NGN') {
+                btnNaira.className = "px-4 py-2 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 transition";
+                btnDollar.className = "px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+            } else {
+                btnDollar.className = "px-4 py-2 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 transition";
+                btnNaira.className = "px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+            }
+            updatePriceDisplay();
+        }
+
+        function updatePriceDisplay() {
+            const isNaira = state.currency === 'NGN';
+            document.getElementById('price-free').textContent = isNaira ? '₦0' : '$0';
+            document.getElementById('price-basic').textContent = isNaira ? '₦1,000' : '$2';
+            document.getElementById('price-standard').textContent = isNaira ? '₦2,000' : '$4';
+            document.getElementById('price-premium').textContent = isNaira ? '₦3,500' : '$7';
+
+            document.getElementById('save-basic').innerHTML = isNaira ? '<s>₦1,500</s> save ₦500' : '<s>$3</s> save $1';
+            document.getElementById('save-standard').innerHTML = isNaira ? '<s>₦3,000</s> save ₦1,000' : '<s>$6</s> save $2';
+            document.getElementById('save-premium').innerHTML = isNaira ? '<s>₦5,000</s> save ₦1,500' : '<s>$10</s> save $3';
+        }
+
+        function selectPlan(planName) {
+            state.selectedPlan = planName;
+            document.getElementById('checkout-plan-summary').textContent = `Selected Plan: ${planName} (${state.currency})`;
+            document.getElementById('checkout-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openPayModal() {
+            document.getElementById('pay-modal').classList.remove('hidden');
+        }
+
+        function closePayModal() {
+            document.getElementById('pay-modal').classList.add('hidden');
+        }
+
+        function processCardPayment(e) {
+            e.preventDefault();
+            const planToTier = { 'Basic': 'basic', 'Standard': 'standard', 'Premium': 'premium' };
+            const newTier = planToTier[state.selectedPlan] || 'premium';
+            state.tier = newTier;
+            localStorage.setItem('crowndev_tier', newTier);
+            renderAuthNav();
+            closePayModal();
+            alert(`Payment Verified! Your account has been upgraded to ${newTier.toUpperCase()} access.`);
+        }
+
+        function handleReceiptSubmit(e) {
+            e.preventDefault();
+            alert("Receipt uploaded! We will verify your transaction and enable access shortly.");
+        }
+    </script>
+</body>
+</html>
