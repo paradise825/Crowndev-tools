@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrownDev Tools - All-in-One Developer & Utility SaaS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        crown: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            800: '#92400e',
+                            900: '#78350f',
+                        },
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                        darkborder: '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f8fafc;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .pro-gradient {
+            background: linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .paystack-green {
+            background-color: #09a5db;
+        }
+        .paystack-green:hover {
+            background-color: #028dbb;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-crown-500 selection:text-white">
+
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="sticky top-0 z-40 glass-panel border-b border-darkborder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('directory')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-crown-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-crown-500/20">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                            CrownDev <span class="text-xs px-2 py-0.5 rounded-full bg-crown-500/20 text-crown-400 border border-crown-500/30">TOOLS</span>
+                        </span>
+                        <p class="text-xs text-slate-400 hidden sm:block">Client-Side SaaS Platform</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links & User Profile Control -->
+                <div class="flex items-center gap-3">
+                    <!-- Inspector Toggle -->
+                    <button onclick="toggleInspector()" class="hidden md:flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+                        <i class="fa-solid fa-database text-amber-400"></i>
+                        <span>DB Inspector</span>
+                    </button>
+
+                    <!-- User Account Dropdown / Auth Button -->
+                    <div id="auth-nav-container">
+                        <!-- Dynamic Auth State rendered by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- SYSTEM ALERTS / TOAST CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <!-- DASHBOARD HERO BANNER -->
+        <div class="mb-8 p-6 sm:p-8 rounded-2xl glass-panel relative overflow-hidden border border-slate-800">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-crown-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300 mb-3">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Privacy First • 100% Client-Side Processing
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                        Developer & Content Creation Suite
+                    </h1>
+                    <p class="text-slate-400 text-sm sm:text-base mt-1 max-w-2xl">
+                        High-performance browser tools with no server file uploads. Access free utilities or unlock Pro grade features.
+                    </p>
+                </div>
+                <div id="hero-tier-card" class="w-full md:w-auto flex items-center gap-4 p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                    <!-- Dynamic Tier Status Rendered by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW CONTAINER: DIRECTORY (DEFAULT VIEW) -->
+        <div id="view-directory" class="space-y-6">
+            <!-- Filter & Search Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div class="relative w-full sm:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input type="text" id="tool-search" oninput="filterTools()" placeholder="Search tools..." class="w-full pl-9 pr-4 py-2 bg-slate-800/80 rounded-lg border border-slate-700 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-crown-500">
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                    <button onclick="setFilter('all')" id="filter-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-crown-500 text-slate-950 transition">All Tools</button>
+                    <button onclick="setFilter('free')" id="filter-free" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Free Tier</button>
+                    <button onclick="setFilter('pro')" id="filter-pro" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition">Pro Tier</button>
+                </div>
+            </div>
+
+            <!-- Tool Cards Grid -->
+            <div id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Rendered dynamically by JavaScript -->
+            </div>
+        </div>
+
+        <!-- VIEW CONTAINER: FREE TOOL (IMAGE RESIZER & COMPRESSOR) -->
+        <div id="view-tool-resizer" class="hidden space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <button onclick="switchView('directory')" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                </button>
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <i class="fa-solid fa-unlock text-xs mr-1"></i> FREE TOOL
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Controls Panel -->
+                <div class="lg:col-span-5 glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-file-image text-emerald-400"></i> Image Resizer & Compressor
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Resize, convert and compress images strictly inside your browser canvas.</p>
+                    </div>
+
+                    <!-- File Selector -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Select Image</label>
+                        <input type="file" id="resizer-file-input" accept="image/*" class="block w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-crown-400 hover:file:bg-slate-700 cursor-pointer bg-slate-900 rounded-lg border border-slate-800 p-1">
+                    </div>
+
+                    <!-- Dimensions Controls -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Width (px)</label>
+                            <input type="number" id="resizer-width" placeholder="Width" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Height (px)</label>
+                            <input type="number" id="resizer-height" placeholder="Height" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                        </div>
+                    </div>
+
+                    <!-- Lock Aspect Ratio -->
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="resizer-aspect" checked class="rounded bg-slate-900 border-slate-700 text-crown-500 focus:ring-0">
+                        <label for="resizer-aspect" class="text-xs text-slate-300">Maintain Aspect Ratio</label>
+                    </div>
+
+                    <!-- Quality Slider -->
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                            <span>Image Quality</span>
+                            <span id="quality-val">80%</span>
+                        </div>
+                        <input type="range" id="resizer-quality" min="10" max="100" value="80" class="w-full accent-crown-500">
+                    </div>
+
+                    <!-- Format Options -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Output Format</label>
+                        <select id="resizer-format" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                            <option value="image/jpeg">JPEG (.jpg)</option>
+                            <option value="image/png">PNG (.png)</option>
+                            <option value="image/webp">WebP (.webp)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="processImageResize()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Process & Generate Preview
+                    </button>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="lg:col-span-7 glass-panel p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white mb-4">Output Preview</h3>
+                        <div id="resizer-preview-container" class="w-full h-80 bg-slate-950 rounded-xl border border-slate-800 border-dashed flex flex-col items-center justify-center p-4 overflow-hidden relative">
+                            <p class="text-slate-500 text-xs flex items-center gap-2" id="preview-placeholder">
+                                <i class="fa-solid fa-image text-2xl"></i> Upload an image to preview results
+                            </p>
+                            <img id="resizer-output-img" class="max-h-full max-w-full object-contain hidden rounded">
+                        </div>
+                    </div>
+
+                    <!-- Output Info Bar -->
+                    <div class="mt-4 p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div>
+                            <p class="text-xs text-slate-400">Processed File Size:</p>
+                            <p id="resizer-size-info" class="text-sm font-bold text-white">0 KB</p>
+                        </div>
+                        <a id="resizer-download-btn" href="#" download="resized-image.jpg" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-crown-500 hover:bg-crown-600 text-slate-950 font-bold text-xs text-center transition opacity-50 pointer-events-none">
+                            <i class="fa-solid fa-download mr-1"></i> Download Processed File
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW CONTAINER: PRO TOOL (ADVANCED CV / RESUME BUILDER) -->
+        <div id="view-tool-builder" class="hidden space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <button onclick="switchView('directory')" class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                </button>
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-crown text-xs"></i> PRO EXCLUSIVE
+                </span>
+            </div>
+
+            <!-- Main Pro Resume Interface -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Resume Editor Controls -->
+                <div class="lg:col-span-5 glass-panel p-6 rounded-2xl border border-slate-800 space-y-5 max-h-[800px] overflow-y-auto">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-amber-400"></i> Pro Resume Builder
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">Design executive resumes with real-time PDF print preview.</p>
+                    </div>
+
+                    <!-- Personal Info Section -->
+                    <div class="space-y-3 pt-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-crown-400 border-b border-slate-800 pb-1">1. Personal Information</h4>
+                        <input type="text" id="cv-name" oninput="updateCVPreview()" value="Paradise Idowu" placeholder="Full Name" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white focus:outline-none focus:border-crown-500">
+                        <input type="text" id="cv-title" oninput="updateCVPreview()" value="Senior Full Stack Engineer" placeholder="Professional Title" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white focus:outline-none focus:border-crown-500">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="email" id="cv-email" oninput="updateCVPreview()" value="developer@crowndev.com" placeholder="Email" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white">
+                            <input type="text" id="cv-phone" oninput="updateCVPreview()" value="+234 812 345 6789" placeholder="Phone" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white">
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-crown-400 border-b border-slate-800 pb-1">2. Professional Summary</h4>
+                        <textarea id="cv-summary" oninput="updateCVPreview()" rows="3" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white focus:outline-none focus:border-crown-500">Passionate Software Engineer with 6+ years of experience constructing resilient scalable web architectures, SaaS microservices, and client-side web tools.</textarea>
+                    </div>
+
+                    <!-- Experience Section -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-crown-400 border-b border-slate-800 pb-1">3. Work Experience</h4>
+                        <input type="text" id="cv-exp-role" oninput="updateCVPreview()" value="Lead Architect - CrownDev Suite" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white">
+                        <input type="text" id="cv-exp-date" oninput="updateCVPreview()" value="2022 - PRESENT" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white">
+                        <textarea id="cv-exp-desc" oninput="updateCVPreview()" rows="3" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white">Architected client-side web platforms with integrated zero-knowledge privacy standards and high performance canvas rendering engines.</textarea>
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-crown-400 border-b border-slate-800 pb-1">4. Skills (Comma Separated)</h4>
+                        <input type="text" id="cv-skills" oninput="updateCVPreview()" value="JavaScript (ES6+), React, Node.js, Tailwind CSS, Webhooks, Firestore, Python" class="w-full px-3 py-2 bg-slate-900 rounded-lg border border-slate-700 text-xs text-white">
+                    </div>
+
+                    <button onclick="printResume()" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-crown-500 hover:from-amber-600 hover:to-crown-600 text-slate-950 font-bold text-sm shadow-lg shadow-crown-500/20 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Export Professional PDF Resume
+                    </button>
+                </div>
+
+                <!-- Live A4 Paper Preview -->
+                <div class="lg:col-span-7 glass-panel p-6 rounded-2xl border border-slate-800 flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-4">
+                        <span class="text-xs text-slate-400">Live Document Canvas (A4 Standard)</span>
+                        <span class="text-xs text-emerald-400 flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-rotate animate-spin"></i> Live Sync
+                        </span>
+                    </div>
+
+                    <!-- CV Document Container (Print target) -->
+                    <div id="cv-document-paper" class="w-full max-w-[595px] min-h-[750px] bg-white text-slate-900 p-8 rounded-lg shadow-2xl text-xs font-sans space-y-4">
+                        <!-- Header -->
+                        <div class="border-b border-slate-300 pb-4">
+                            <h1 id="pv-name" class="text-2xl font-black text-slate-900 uppercase tracking-tight">Paradise Idowu</h1>
+                            <p id="pv-title" class="text-sm font-semibold text-amber-600 uppercase tracking-wider">Senior Full Stack Engineer</p>
+                            <div class="flex flex-wrap gap-3 mt-2 text-[10px] text-slate-600">
+                                <span><i class="fa-solid fa-envelope mr-1"></i><span id="pv-email">developer@crowndev.com</span></span>
+                                <span><i class="fa-solid fa-phone mr-1"></i><span id="pv-phone">+234 812 345 6789</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Summary -->
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1 mb-1">Executive Summary</h2>
+                            <p id="pv-summary" class="text-[11px] text-slate-700 leading-relaxed">
+                                Passionate Software Engineer with 6+ years of experience constructing resilient scalable web architectures, SaaS microservices, and client-side web tools.
+                            </p>
+                        </div>
+
+                        <!-- Work Experience -->
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1 mb-2">Work Experience</h2>
+                            <div>
+                                <div class="flex justify-between font-bold text-slate-900 text-[11px]">
+                                    <span id="pv-exp-role">Lead Architect - CrownDev Suite</span>
+                                    <span id="pv-exp-date" class="text-slate-500 font-normal">2022 - PRESENT</span>
+                                </div>
+                                <p id="pv-exp-desc" class="text-[10px] text-slate-700 mt-1 leading-normal">
+                                    Architected client-side web platforms with integrated zero-knowledge privacy standards and high performance canvas rendering engines.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Skills -->
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1 mb-2">Core Competencies</h2>
+                            <div id="pv-skills-tags" class="flex flex-wrap gap-1">
+                                <!-- Tags dynamically generated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-darkborder mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center text-xs text-slate-400">
+            <p>© 2026 CrownDev Tools. Built by Paradise Idowu.</p>
+            <div class="flex justify-center gap-4 mt-3 sm:mt-0">
+                <a href="mailto:idowuparadise825@gmail.com" class="hover:text-crown-400 transition"><i class="fa-solid fa-envelope mr-1"></i> Support Email</a>
+                <a href="https://wa.me/2348123456789" target="_blank" class="hover:text-emerald-400 transition"><i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: AUTHENTICATION (LOGIN / SIGNUP) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md p-6 rounded-2xl border border-slate-800 shadow-2xl relative">
+            <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-800 mb-6">
+                <button id="tab-login" onclick="switchAuthTab('login')" class="flex-1 pb-3 text-sm font-bold text-crown-400 border-b-2 border-crown-400">Log In</button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')" class="flex-1 pb-3 text-sm font-bold text-slate-400 border-b-2 border-transparent">Create Account</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="user@crowndev.com" class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="login-pass" required placeholder="••••••••" class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-crown-500 hover:bg-crown-600 text-slate-950 font-bold text-sm shadow-lg shadow-crown-500/20 transition">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="signup-name" required placeholder="Developer Name" class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="signup-email" required placeholder="user@crowndev.com" class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="signup-pass" required placeholder="••••••••" class="w-full px-3 py-2.5 bg-slate-900 rounded-lg border border-slate-700 text-sm text-white focus:outline-none focus:border-crown-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-crown-500 hover:bg-crown-600 text-slate-950 font-bold text-sm shadow-lg shadow-crown-500/20 transition">
+                    Register New Account
+                </button>
+            </form>
+
+            <div class="mt-4 pt-4 border-t border-slate-800 text-center">
+                <button onclick="loginDemoAccount()" class="text-xs text-crown-400 hover:underline">
+                    <i class="fa-solid fa-user-gear mr-1"></i> One-Click Demo Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: LOCKED TOOL UPGRADE PROMPT -->
+    <div id="upgrade-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md p-6 rounded-2xl border border-slate-800 text-center relative shadow-2xl">
+            <button onclick="closeModal('upgrade-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-4 text-amber-400 text-2xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+
+            <h3 id="locked-tool-title" class="text-xl font-bold text-white mb-2">Pro Feature Locked</h3>
+            <p class="text-xs text-slate-400 mb-6">You are trying to access a Pro tool. Upgrade your CrownDev subscription to gain lifetime access.</p>
+
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 mb-6 text-left space-y-2">
+                <div class="flex items-center gap-2 text-xs text-slate-200">
+                    <i class="fa-solid fa-check text-emerald-400"></i> Full Access to Executive Resume Builder
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-200">
+                    <i class="fa-solid fa-check text-emerald-400"></i> Zero Client-Side File Compression Limits
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-200">
+                    <i class="fa-solid fa-check text-emerald-400"></i> Priority WhatsApp & Email Support
+                </div>
+            </div>
+
+            <button onclick="openPaystackModal()" class="w-full py-3.5 rounded-xl pro-gradient text-slate-950 font-extrabold text-sm shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt"></i> Upgrade Now - ₦5,000 / $5
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: PAYSTACK PAYMENT GATEWAY SIMULATOR -->
+    <div id="paystack-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-slate-900 w-full max-w-sm rounded-2xl border border-slate-700 overflow-hidden shadow-2xl relative text-slate-200">
+            <!-- Paystack Header -->
+            <div class="paystack-green p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2 font-bold text-sm">
+                    <i class="fa-solid fa-shield-halved"></i> Paystack Checkout
+                </div>
+                <button onclick="closeModal('paystack-modal')" class="text-white/80 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Amount Banner -->
+            <div class="bg-slate-800/80 p-4 border-b border-slate-700 flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">Pay CrownDev Suite</p>
+                    <p id="paystack-user-email" class="text-xs font-semibold text-slate-200">user@crowndev.com</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-lg font-black text-emerald-400">₦5,000.00</span>
+                </div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="p-5 space-y-4">
+                <div class="flex gap-2 border-b border-slate-800 pb-3">
+                    <button id="pay-method-card" onclick="switchPayMethod('card')" class="flex-1 py-1.5 rounded text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700">Card</button>
+                    <button id="pay-method-ussd" onclick="switchPayMethod('ussd')" class="flex-1 py-1.5 rounded text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800">USSD / Bank</button>
+                </div>
+
+                <!-- Card Form -->
+                <div id="pay-form-card" class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Card Number</label>
+                        <input type="text" id="pay-card-num" value="4084 0000 0000 0000" class="w-full px-3 py-2 bg-slate-950 rounded border border-slate-700 text-xs text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Expiry</label>
+                            <input type="text" value="12/28" class="w-full px-3 py-2 bg-slate-950 rounded border border-slate-700 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">CVV</label>
+                            <input type="text" value="825" class="w-full px-3 py-2 bg-slate-950 rounded border border-slate-700 text-xs text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USSD Form -->
+                <div id="pay-form-ussd" class="space-y-3 hidden text-center py-2">
+                    <p class="text-xs text-slate-300">Dial the code below on your phone to complete payment:</p>
+                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 font-mono text-base text-amber-400 font-bold">
+                        *737*000*825#
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="processPaystackPayment()" class="w-full py-3 rounded-lg paystack-green text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock"></i> Authorize & Pay ₦5,000
+                </button>
+                <p class="text-[10px] text-center text-slate-500">
+                    <i class="fa-solid fa-shield-cat"></i> Simulated Webhook Sandbox
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING INSPECTOR MODAL: FIRESTORE / USER STATE OBSERVER -->
+    <div id="inspector-modal" class="fixed bottom-4 left-4 z-50 w-full max-w-sm glass-panel p-4 rounded-2xl border border-slate-800 shadow-2xl hidden flex-col">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-800 mb-2">
+            <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-database"></i> Live Database State Inspector
+            </span>
+            <button onclick="toggleInspector()" class="text-slate-400 hover:text-white text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <pre id="json-state-display" class="bg-slate-950 p-3 rounded-xl text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-60 border border-slate-900"></pre>
+    </div>
+
+    <!-- JAVASCRIPT ARCHITECTURE -->
+    <script>
+        // ==========================================
+        // 1. SAAS DATA STRUCTURES & TOOLS REGISTRY
+        // ==========================================
+        const TOOLS_REGISTRY = [
+            {
+                id: "resizer",
+                title: "Image Resizer & Compressor",
+                description: "Crop, scale, and compress images directly in browser memory without sending files to any cloud server.",
+                tier: "free",
+                icon: "fa-file-image",
+                category: "Media",
+                views: "view-tool-resizer"
+            },
+            {
+                id: "builder",
+                title: "Pro Executive CV Builder",
+                description: "Construct multi-section professional tech resumes with live A4 layout renderer and PDF print export.",
+                tier: "pro",
+                icon: "fa-id-card",
+                category: "Career",
+                views: "view-tool-builder"
+            },
+            {
+                id: "svg-opt",
+                title: "SVG Vector Cleaner",
+                description: "Minify inline SVG code and optimize path structures for modern web applications.",
+                tier: "free",
+                icon: "fa-bezier-curve",
+                category: "Developer",
+                views: null
+            },
+            {
+                id: "api-tester",
+                title: "Pro API Mock Generator",
+                description: "Generate fake JSON REST endpoints and test Webhooks in client-side runtime.",
+                tier: "pro",
+                icon: "fa-network-wired",
+                category: "Developer",
+                views: null
+            }
+        ];
+
+        // Simulated Database State (Mimicking Firestore Auth & User Document)
+        let currentUser = {
+            uid: "anon_" + Math.random().toString(36).substr(2, 8),
+            isLoggedIn: false,
+            displayName: "Guest User",
+            email: "guest@crowndev.com",
+            subscriptionStatus: "free", // "free" | "premium"
+            paymentHistory: [],
+            createdAt: new Date().toISOString()
+        };
+
+        let currentFilter = 'all';
+
+        // ==========================================
+        // 2. INITIALIZATION & ROUTING
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAuthNav();
+            renderHeroTier();
+            renderToolsGrid();
+            updateStateDisplay();
+            updateCVPreview(); // Pre-render CV demo
+        });
+
+        function switchView(viewId) {
+            // Hide all sub views
+            document.getElementById('view-directory').classList.add('hidden');
+            document.getElementById('view-tool-resizer').classList.add('hidden');
+            document.getElementById('view-tool-builder').classList.add('hidden');
+
+            if (viewId === 'directory') {
+                document.getElementById('view-directory').classList.remove('hidden');
+            } else {
+                document.getElementById(viewId).classList.remove('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // 3. TOOL CARD RENDERING & GATING ENGINE
+        // ==========================================
+        function renderToolsGrid() {
+            const container = document.getElementById('tools-grid');
+            const searchVal = document.getElementById('tool-search').value.toLowerCase();
+
+            const filtered = TOOLS_REGISTRY.filter(tool => {
+                const matchesFilter = currentFilter === 'all' || tool.tier === currentFilter;
+                const matchesSearch = tool.title.toLowerCase().includes(searchVal) || tool.description.toLowerCase().includes(searchVal);
+                return matchesFilter && matchesSearch;
+            });
+
+            container.innerHTML = filtered.map(tool => {
+                const isPro = tool.tier === 'pro';
+                const isLocked = isPro && currentUser.subscriptionStatus !== 'premium';
+
+                return `
+                    <div class="glass-panel rounded-2xl p-6 border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition group relative">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-12 h-12 rounded-xl ${isPro ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'} flex items-center justify-center text-xl">
+                                    <i class="fa-solid ${tool.icon}"></i>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${isPro ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'} flex items-center gap-1">
+                                    ${isPro ? '<i class="fa-solid fa-crown text-[10px]"></i> PRO' : '<i class="fa-solid fa-unlock text-[10px]"></i> FREE'}
+                                </span>
+                            </div>
+
+                            <h3 class="text-base font-bold text-white group-hover:text-crown-400 transition mb-2">${tool.title}</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">${tool.description}</p>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[10px] font-semibold text-slate-500 uppercase">${tool.category}</span>
+                            
+                            <button onclick="accessTool('${tool.id}')" class="px-4 py-2 rounded-lg ${isLocked ? 'bg-slate-800 text-amber-400 border border-amber-500/30 hover:bg-slate-700' : 'bg-crown-500 hover:bg-crown-600 text-slate-950'} font-bold text-xs transition flex items-center gap-1.5">
+                                ${isLocked ? '<i class="fa-solid fa-lock text-xs"></i> Unlock Tool' : 'Launch Tool <i class="fa-solid fa-arrow-right text-xs"></i>'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function accessTool(toolId) {
+            const tool = TOOLS_REGISTRY.find(t => t.id === toolId);
+            if (!tool) return;
+
+            // Check Gating Security Logic
+            if (tool.tier === 'pro' && currentUser.subscriptionStatus !== 'premium') {
+                document.getElementById('locked-tool-title').innerText = `Access Locked: ${tool.title}`;
+                openModal('upgrade-modal');
+                showToast("Pro Tier required to access this tool", "warning");
+                return;
+            }
+
+            if (tool.views) {
+                switchView(tool.views);
+            } else {
+                showToast(`Demo tool launch: ${tool.title}`, "info");
+            }
+        }
+
+        function setFilter(filterType) {
+            currentFilter = filterType;
+            ['all', 'free', 'pro'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (f === filterType) {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-crown-500 text-slate-950 transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white transition";
+                }
+            });
+            renderToolsGrid();
+        }
+
+        function filterTools() {
+            renderToolsGrid();
+        }
+
+        // ==========================================
+        // 4. AUTHENTICATION CONTROLLER (SIMULATOR)
+        // ==========================================
+        function renderAuthNav() {
+            const container = document.getElementById('auth-nav-container');
+            if (currentUser.isLoggedIn) {
+                container.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs font-bold text-white">${currentUser.displayName}</p>
+                            <p class="text-[10px] text-slate-400">${currentUser.email}</p>
+                        </div>
+                        <button onclick="handleLogout()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" title="Log Out">
+                            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openModal('auth-modal')" class="px-4 py-2 rounded-xl bg-crown-500 hover:bg-crown-600 text-slate-950 font-bold text-xs transition shadow-lg shadow-crown-500/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-lock text-xs"></i> Login / Register
+                    </button>
+                `;
+            }
+        }
+
+        function renderHeroTier() {
+            const card = document.getElementById('hero-tier-card');
+            const isPro = currentUser.subscriptionStatus === 'premium';
+            
+            card.innerHTML = `
+                <div class="w-10 h-10 rounded-lg ${isPro ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' : 'bg-slate-800 text-slate-400'} flex items-center justify-center text-lg">
+                    <i class="fa-solid ${isPro ? 'fa-crown' : 'fa-user'}"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Plan</span>
+                    <p class="text-sm font-extrabold ${isPro ? 'text-amber-400' : 'text-slate-200'} flex items-center gap-1">
+                        ${isPro ? 'CrownDev Pro Lifetime' : 'Free Account Tier'}
+                    </p>
+                </div>
+            `;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            currentUser.isLoggedIn = true;
+            currentUser.email = email;
+            currentUser.displayName = email.split('@')[0];
+            
+            closeModal('auth-modal');
+            renderAuthNav();
+            renderHeroTier();
+            renderToolsGrid();
+            updateStateDisplay();
+            showToast(`Welcome back, ${currentUser.displayName}!`, "success");
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            
+            currentUser.isLoggedIn = true;
+            currentUser.displayName = name;
+            currentUser.email = email;
+
+            closeModal('auth-modal');
+            renderAuthNav();
+            renderHeroTier();
+            renderToolsGrid();
+            updateStateDisplay();
+            showToast("Account successfully registered!", "success");
+        }
+
+        function loginDemoAccount() {
+            currentUser.isLoggedIn = true;
+            currentUser.displayName = "Paradise Dev";
+            currentUser.email = "idowuparadise825@gmail.com";
+            
+            closeModal('auth-modal');
+            renderAuthNav();
+            renderHeroTier();
+            renderToolsGrid();
+            updateStateDisplay();
+            showToast("Logged in as Demo User", "info");
+        }
+
+        function handleLogout() {
+            currentUser.isLoggedIn = false;
+            currentUser.displayName = "Guest User";
+            currentUser.email = "guest@crowndev.com";
+            currentUser.subscriptionStatus = "free";
+
+            renderAuthNav();
+            renderHeroTier();
+            renderToolsGrid();
+            updateStateDisplay();
+            switchView('directory');
+            showToast("Logged out successfully", "info");
+        }
+
+        function switchAuthTab(tab) {
+            const formLogin = document.getElementById('form-login');
+            const formSignup = document.getElementById('form-signup');
+            const tabLogin = document.getElementById('tab-login');
+            const tabSignup = document.getElementById('tab-signup');
+
+            if (tab === 'login') {
+                formLogin.classList.remove('hidden');
+                formSignup.classList.add('hidden');
+                tabLogin.className = "flex-1 pb-3 text-sm font-bold text-crown-400 border-b-2 border-crown-400";
+                tabSignup.className = "flex-1 pb-3 text-sm font-bold text-slate-400 border-b-2 border-transparent";
+            } else {
+                formLogin.classList.add('hidden');
+                formSignup.classList.remove('hidden');
+                tabSignup.className = "flex-1 pb-3 text-sm font-bold text-crown-400 border-b-2 border-crown-400";
+                tabLogin.className = "flex-1 pb-3 text-sm font-bold text-slate-400 border-b-2 border-transparent";
+            }
+        }
+
+        // ==========================================
+        // 5. PAYSTACK PAYMENT GATEWAY SIMULATOR
+        // ==========================================
+        function openPaystackModal() {
+            if (!currentUser.isLoggedIn) {
+                closeModal('upgrade-modal');
+                openModal('auth-modal');
+                showToast("Please login before upgrading to Pro", "warning");
+                return;
+            }
+            closeModal('upgrade-modal');
+            document.getElementById('paystack-user-email').innerText = currentUser.email;
+            openModal('paystack-modal');
+        }
+
+        function switchPayMethod(method) {
+            const cardBtn = document.getElementById('pay-method-card');
+            const ussdBtn = document.getElementById('pay-method-ussd');
+            const cardForm = document.getElementById('pay-form-card');
+            const ussdForm = document.getElementById('pay-form-ussd');
+
+            if (method === 'card') {
+                cardForm.classList.remove('hidden');
+                ussdForm.classList.add('hidden');
+                cardBtn.className = "flex-1 py-1.5 rounded text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700";
+                ussdBtn.className = "flex-1 py-1.5 rounded text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800";
+            } else {
+                cardForm.classList.add('hidden');
+                ussdForm.classList.remove('hidden');
+                ussdBtn.className = "flex-1 py-1.5 rounded text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700";
+                cardBtn.className = "flex-1 py-1.5 rounded text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800";
+            }
+        }
+
+        function processPaystackPayment() {
+            showToast("Verifying transaction with Paystack Webhook...", "info");
+            
+            setTimeout(() => {
+                // Update User Subscription State
+                currentUser.subscriptionStatus = "premium";
+                currentUser.paymentHistory.push({
+                    reference: "CD_PAY_" + Math.floor(Math.random() * 10000000),
+                    amount: 5000,
+                    currency: "NGN",
+                    date: new Date().toISOString(),
+                    status: "success"
+                });
+
+                closeModal('paystack-modal');
+                renderHeroTier();
+                renderToolsGrid();
+                updateStateDisplay();
+
+                showToast("🎉 Payment Confirmed! Pro Tier Unlocked.", "success");
+            }, 1200);
+        }
+
+        // ==========================================
+        // 6. FUNCTIONAL FREE TOOL: CLIENT IMAGE RESIZER
+        // ==========================================
+        let rawImageObj = null;
+
+        document.getElementById('resizer-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                rawImageObj = new Image();
+                rawImageObj.onload = function() {
+                    document.getElementById('resizer-width').value = rawImageObj.width;
+                    document.getElementById('resizer-height').value = rawImageObj.height;
+                    processImageResize();
+                };
+                rawImageObj.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('resizer-quality').addEventListener('input', function(e) {
+            document.getElementById('quality-val').innerText = `${e.target.value}%`;
+        });
+
+        function processImageResize() {
+            if (!rawImageObj) {
+                showToast("Please upload an image file first", "warning");
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const targetW = parseInt(document.getElementById('resizer-width').value) || rawImageObj.width;
+            const targetH = parseInt(document.getElementById('resizer-height').value) || rawImageObj.height;
+            const quality = parseInt(document.getElementById('resizer-quality').value) / 100;
+            const format = document.getElementById('resizer-format').value;
+
+            canvas.width = targetW;
+            canvas.height = targetH;
+
+            ctx.drawImage(rawImageObj, 0, 0, targetW, targetH);
+
+            const dataUrl = canvas.toDataURL(format, quality);
+
+            // Display in preview
+            const previewImg = document.getElementById('resizer-output-img');
+            const placeholder = document.getElementById('preview-placeholder');
+            
+            previewImg.src = dataUrl;
+            previewImg.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+
+            // Calculate size
+            const head = 'data:' + format + ';base64,';
+            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
+            document.getElementById('resizer-size-info').innerText = (sizeInBytes / 1024).toFixed(2) + " KB";
+
+            // Download Button Setup
+            const dlBtn = document.getElementById('resizer-download-btn');
+            dlBtn.href = dataUrl;
+            dlBtn.classList.remove('opacity-50', 'pointer-events-none');
+            showToast("Image processed successfully!", "success");
+        }
+
+        // ==========================================
+        // 7. FUNCTIONAL PRO TOOL: CV BUILDER & PRINT
+        // ==========================================
+        function updateCVPreview() {
+            document.getElementById('pv-name').innerText = document.getElementById('cv-name').value || "Your Name";
+            document.getElementById('pv-title').innerText = document.getElementById('cv-title').value || "Professional Title";
+            document.getElementById('pv-email').innerText = document.getElementById('cv-email').value || "idowuparadise@gmail.com";
+            document.getElementById('pv-phone').innerText = document.getElementById('cv-phone').value || "+234 9162069367";
+            document.getElementById('pv-summary').innerText = document.getElementById('cv-summary').value || "";
+            document.getElementById('pv-exp-role').innerText = document.getElementById('cv-exp-role').value || "";
+            document.getElementById('pv-exp-date').innerText = document.getElementById('cv-exp-date').value || "";
+            document.getElementById('pv-exp-desc').innerText = document.getElementById('cv-exp-desc').value || "";
+
+            // Skills render
+            const skillsRaw = document.getElementById('cv-skills').value;
+            const skillsArr = skillsRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            const tagsContainer = document.getElementById('pv-skills-tags');
+            
+            tagsContainer.innerHTML = skillsArr.map(sk => `
+                <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[9px] font-semibold border border-slate-300">${sk}</span>
+            `).join('');
+        }
+
+        function printResume() {
+            window.print();
+        }
+
+        // ==========================================
+        // 8. UTILITIES & MODAL CONTROLLERS
+        // ==========================================
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        function toggleInspector() {
+            const inspector = document.getElementById('inspector-modal');
+            inspector.classList.toggle('hidden');
+            inspector.classList.toggle('flex');
+        }
+
+        function updateStateDisplay() {
+            document.getElementById('json-state-display').innerText = JSON.stringify(currentUser, null, 2);
+        }
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let badgeBg = "bg-slate-800 text-white border-slate-700";
+            if (type === "success") badgeBg = "bg-emerald-950 text-emerald-300 border-emerald-800";
+            if (type === "warning") badgeBg = "bg-amber-950 text-amber-300 border-amber-800";
+
+            toast.className = `p-3.5 rounded-xl border ${badgeBg} shadow-xl text-xs font-medium flex items-center justify-between transition transform translate-y-2 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `
+                <span>${message}</span>
+                <i class="fa-solid fa-xmark ml-3 cursor-pointer opacity-70 hover:opacity-100" onclick="this.parentElement.remove()"></i>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
